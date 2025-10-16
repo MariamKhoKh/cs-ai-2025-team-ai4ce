@@ -319,7 +319,7 @@ Each team member should:
 - **Tinatin Javakhadze** agreed on _______________
 - **Gvantsa Tchuradze** agreed on _______________
 - **Davit Karoiani** agreed on _______________
-- **Mariam Khokhiashvili** agreed on _______________
+- **Mariam Khokhiashvili** agreed on 2025-10-16
 
 ---
 
