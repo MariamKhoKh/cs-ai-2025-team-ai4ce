@@ -14,15 +14,12 @@
 | [Mariam Khokhiashvili] | [Khokhiashvili.mariam@kiu.edu.ge] | [@mariam-khokhiashvili] | [e.g. Builder/Coder/Engineer ] |
 ---
 
-## Team Mission & Goals
+## Project Overview
 
-*Our Mission:*
-[To design and build an AI-powered application that simplifies the transition from school to university 
-by providing personalized academic guidance, smart tools, and accessible campus-related assistance — helping 
-students adapt academically, socially, and practically to university life.]
+### Key Features
 
-*Our Goals for This Semester:*
-1. [Develop Core Functionalities]
-2. [Integrate AI-driven Features]
-3. [Deliver a Usable Prototype]
----
+## Technology Stack
+
+
+## Getting Started
+See [docs/setup.md](docs/setup.md) for detailed setup instructions.
