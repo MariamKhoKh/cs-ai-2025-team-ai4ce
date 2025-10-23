@@ -1,4 +1,4 @@
-# [Project Title]
+# CodeMentor AI
 
 **Team Name:** AI4ce
 **Course:** Building AI-Powered Applications  
@@ -47,4 +47,5 @@ Academic project for Building AI-Powered Applications course.
 ## Contact
 
 For questions or collaboration inquiries, contact any team member listed above.
+
 
