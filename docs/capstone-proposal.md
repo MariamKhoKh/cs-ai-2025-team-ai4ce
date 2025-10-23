@@ -419,8 +419,12 @@ Conduct follow-up interviews, collect SUS scores, and compare user progress data
 
 ---
 
+## 8. Team Contract
 
-## 8. Project Timeline
+We've uploaded this file seperately.
+
+---
+##  Project Timeline
 
 | Week | Focus | Deliverables | Risk Level |
 |:-----|:------|:------------|:-----------|
@@ -448,7 +452,7 @@ Conduct follow-up interviews, collect SUS scores, and compare user progress data
 
 ---
 
-## 9. Dataset & Training Plan
+##  Dataset & Training Plan
 
 ### Initial Problem Set
 
@@ -481,7 +485,7 @@ Conduct follow-up interviews, collect SUS scores, and compare user progress data
 
 ---
 
-## 10. Why This is Complex (Not Just an API Call)
+##  Why This is Complex (Not Just an API Call)
 
 **Compared to basic RAG chatbot:**
 1. **Custom ML Model:** Training error classifier, not just using GPT
@@ -500,7 +504,7 @@ Conduct follow-up interviews, collect SUS scores, and compare user progress data
 
 ---
 
-## 11. Future Work (Post-Capstone)
+##  Future Work (Post-Capstone)
 
 - **System Design Problems:** Add whiteboarding interface
 - **Mock Interviews:** Timed, full interview simulation
