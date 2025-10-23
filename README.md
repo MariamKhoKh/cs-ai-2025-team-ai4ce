@@ -5,8 +5,10 @@
 **Semester:** Fall 2025
 
 
+
 ## Team Members
 
+| Name | Email | GitHub Username | Primary Role |
 | Name | Email | GitHub Username | Primary Role |
 |------|-------|-----------------|--------------|
 | Tinatin Javakhadze | Javakhadze.Tinatin@kiu.edu.ge | @tjavakhadze | Backend Lead |
@@ -16,15 +18,21 @@
 ---
 
 
+
 ## Project Overview
+...
+
 ...
 
 
 ### Key Features
 ...
 
+...
+
 
 ## Technology Stack
+...
 ...
 
 
