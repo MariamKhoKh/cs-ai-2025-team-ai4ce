@@ -318,7 +318,8 @@ Each team member should:
 
 - **Tinatin Javakhadze** agreed on 23.10.25 
 - **Gvantsa Tchuradze** agreed on _______________
-- **Davit Karoiani** agreed on _______________
+- **Davit Karoiani** agreed on
+25-10-23
 - **Mariam Khokhiashvili** agreed on 2025-10-16
 
 ---
