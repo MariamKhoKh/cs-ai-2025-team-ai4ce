@@ -56,6 +56,6 @@ If signing digitally, each team member should:
 Type their full name below
 Add the date
 Commit this file with a commit message: "Sign team contract - [Your Name]"
-[Gvantsa tchuradze] agreed on [23/10/25]
 [Name] agreed on [Date]
 [Name] agreed on [Date]
+
