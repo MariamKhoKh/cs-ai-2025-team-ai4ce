@@ -49,3 +49,13 @@ Academic project for Building AI-Powered Applications course.
 For questions or collaboration inquiries, contact any team member listed above.
 
 
+
+For Digital Signatures
+If signing digitally, each team member should:
+
+Type their full name below
+Add the date
+Commit this file with a commit message: "Sign team contract - [Your Name]"
+[Gvantsa tchuradze] agreed on [23/10/25]
+[Name] agreed on [Date]
+[Name] agreed on [Date]
