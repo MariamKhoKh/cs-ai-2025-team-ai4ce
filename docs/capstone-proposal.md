@@ -470,7 +470,7 @@ We've uploaded this file seperately.
 ### ML Training Data
 
 **Initial Dataset (Manual Labeling):**
-- 100 real student submissions (ask permission to use)
+- 100 real student submissions (ask permission to use, all collected submissions will be anonymized, stored securely, and used solely for improving the system in compliance with university data governance policy.)
 - Label each with error type(s)
 - Include optimal solution for comparison
 
