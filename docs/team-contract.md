@@ -317,7 +317,7 @@ Each team member should:
 3. Commit this file with message: "Sign team contract - [Your Name]"
 
 - **Tinatin Javakhadze** agreed on 23.10.25 
-- **Gvantsa Tchuradze** agreed on _______________
+- **Gvantsa Tchuradze** agreed on 23.10.2025
 - **Davit Karoiani** agreed on
 25-10-23
 - **Mariam Khokhiashvili** agreed on 2025-10-16
