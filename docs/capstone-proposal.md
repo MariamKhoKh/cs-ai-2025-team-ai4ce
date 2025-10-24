@@ -56,14 +56,14 @@ This focuses on the most technically complex and valuable component—personaliz
 - Technical level: Can code but struggles with interview-specific skills
 - Context: Practicing 1-2 hours daily for upcoming interviews
 
-**Key Needs:**
+**User Needs:**
 1. **Personalized Feedback** - Know exactly what they're doing wrong repeatedly
 2. **Efficient Practice** - Work on actual weaknesses, not random problems
 3. **Conceptual Understanding** - Learn *why* their approach is suboptimal
 4. **Progress Visibility** - See measurable improvement over time
 5. **Interview Readiness Assessment** - Know when they're ready
 
-**Pain Points:**
+**User Pain Points:**
 - "I practice a lot but keep making the same mistakes"
 - "I don't know which problems to practice next"
 - "LeetCode says 'wrong answer' but doesn't explain my thought process issue"
@@ -158,7 +158,7 @@ Users write code in a web-based IDE. Upon submission, code is executed in a sand
 - Database: PostgreSQL (user profiles, submission history, progress tracking)
 - Cache: Redis for fast problem retrieval
 
-**DevOps:**
+**DevOps/Tooling:**
 - Version Control: GitHub
 - CI/CD: GitHub Actions
 - Testing: pytest, Jest
@@ -295,8 +295,27 @@ For problem recommendation:
 - Mitigation: Emphasize AI as supplement to practice, provide resources for human mentorship, include disclaimer
 
 ---
+## 6. Research Plan – What Do You Need to Learn? What Experiments Will You Run?
+### Learning Objectives
+Our research focuses on understanding how code-level behaviors reveal cognitive learning gaps in programming interview preparation. To achieve this, the team aims to learn:
 
-## 6. User Study Plan
+### Extracting Cognitive Patterns from Code:
+Identify which AST features, structural metrics, and coding behaviors (e.g., missing base cases, nested loops, inefficient algorithms) best indicate recurring conceptual weaknesses.
+
+### Classifying Mistakes Effectively:
+Determine the most effective feature engineering techniques and ML models (Random Forest, XGBoost, small neural networks) for accurate multi-class error classification.
+
+### Measuring Learning Progress Over Time:
+Define metrics that best reflect improvement, such as reduced error recurrence, faster problem-solving, and simpler code structures.
+
+### Generating Targeted Recommendations:
+Explore algorithms that connect user-specific weaknesses to problem sets through embedding-based similarity and collaborative filtering.
+
+### Understanding User Behavior Patterns:
+Analyze how students respond to adaptive feedback — whether they follow suggested problems, revisit mistakes, or seek external explanations.
+---
+
+## 7. User Study Plan
 
 ### Research Ethics
 
@@ -360,7 +379,7 @@ For problem recommendation:
 
 ---
 
-## 8. Dataset & Training Plan
+## 9. Dataset & Training Plan
 
 ### Initial Problem Set
 
@@ -393,7 +412,7 @@ For problem recommendation:
 
 ---
 
-## 9. Future Work (Post-Capstone)
+## 10. Future Work (Post-Capstone)
 
 - **System Design Problems:** Add whiteboarding interface
 - **Mock Interviews:** Timed, full interview simulation
