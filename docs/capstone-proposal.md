@@ -11,9 +11,9 @@
 
 ### The Problem
 
-Students fail technical interviews not because they lack programming knowledge, but because they have **blind spots** they don't recognize. A student might consistently forget edge cases, default to inefficient algorithms, or struggle with specific data structures—but without detailed feedback, they keep making the same mistakes. Current platforms like LeetCode tell you if your solution is correct but don't analyze *how you think* or identify patterns in your mistakes.
+Many candidates fail technical interviews not because they lack programming knowledge, but because they have **blind spots** they don't recognize. People often overlook edge cases, default to inefficient algorithms, or struggle with certain data structures—but without detailed feedback, they keep making the same mistakes. Current platforms like LeetCode indicate if a solution is correct but don't analyze *how you think* or identify patterns in your mistakes.
 
-This is a critical problem: tech companies receive thousands of applications, and students often get only 2-3 interview attempts before being rejected for 6-12 months. Without personalized feedback on their specific weaknesses, students waste time practicing random problems instead of addressing their actual gaps.
+This is a critical problem: tech companies receive thousands of applications, and candidates often get only 2-3 interview attempts before being rejected for 6-12 months. Without personalized feedback on their specific weaknesses, candidates waste time practicing random problems instead of addressing their actual gaps.
 
 ### Why AI is the Right Solution
 
@@ -49,10 +49,10 @@ This focuses on the most technically complex and valuable component—personaliz
 
 ### Primary User Persona
 
-**User Type:** Computer Science Students Preparing for Tech Internships/Jobs
+**User Type:** Anyone preparing for technical interviews (CS students, bootcamp graduates, self-taught developers, career changers)
 
 **Demographics:**
-- Age: 20-24 (junior/senior undergrads, recent grads)
+- Age: 18-35 (undergrads, bootcamp students, career changers, recent grads)
 - Technical level: Can code but struggles with interview-specific skills
 - Context: Practicing 1-2 hours daily for upcoming interviews
 
@@ -91,12 +91,9 @@ This focuses on the most technically complex and valuable component—personaliz
 
 ### Learning Goals
 
-**Team Member 1:**
 - Implement code execution sandbox and AST parsing pipeline
 - Build ML model for error pattern classification
 - Design adaptive recommendation algorithm
-
-**Team Member 2:**
 - Develop real-time code editor with execution feedback
 - Create interactive progress dashboard with data visualization
 - Implement prompt engineering for educational explanations
@@ -107,15 +104,15 @@ This focuses on the most technically complex and valuable component—personaliz
 
 ### System Overview
 
-Users write code in a web-based IDE. Upon submission, code is executed in a sandboxed environment. An AST parser analyzes code structure, complexity, and patterns. An ML classifier identifies error types (e.g., "missed edge case," "suboptimal complexity," "poor variable naming"). Results are stored in a user profile, and a recommendation engine suggests next problems based on detected weaknesses. GPT-4 generates personalized explanations connecting mistakes to CS concepts.
+Users write code in a web-based IDE. Upon submission, code is executed in a sandboxed environment. An AST parser analyzes code structure, complexity, and patterns. An ML classifier identifies error types (e.g., "missed edge case," "suboptimal complexity," "poor variable naming"). Results are stored in a user profile, and a recommendation engine suggests next problems based on detected weaknesses. LLM generates personalized explanations connecting mistakes to CS concepts.
 
 ### Architecture Diagram
 
 ```
 ┌─────────────┐      ┌──────────────────┐      ┌─────────────────┐
-│   User      │─────▶│   Frontend       │─────▶│    Backend      │
-│  (Browser)  │◀─────│  (Next.js/       │◀─────│  (FastAPI/      │
-│             │      │   Monaco Editor) │      │   Python)       │
+│   User      │─────▶│   Frontend      │─────▶│    Backend      │
+│  (Browser)  │◀─────│  (React/        │◀─────│  (FastAPI/      │
+│             │      │    Typescript)   │      │   Python)       │
 └─────────────┘      └──────────────────┘      └─────────────────┘
                                                         │
                           ┌─────────────────────────────┼──────────────────┐
@@ -141,7 +138,7 @@ Users write code in a web-based IDE. Upon submission, code is executed in a sand
 ### Technology Stack
 
 **Frontend:**
-- Framework: Next.js 14 with TypeScript
+- Framework: React with TypeScript
 - Code Editor: Monaco Editor (VS Code's editor)
 - Visualization: Recharts for progress tracking
 - Hosting: Vercel
@@ -155,7 +152,7 @@ Users write code in a web-based IDE. Upon submission, code is executed in a sand
 **AI/ML:**
 - Primary LLM: GPT-4 for explanation generation
 - Custom ML: scikit-learn for pattern classification (trained on labeled error data)
-- Embeddings: text-embedding-3-small for problem similarity matching
+- Embeddings: Qdrant/text-embedding-3-small for problem similarity matching
 
 **Data Storage:**
 - Database: PostgreSQL (user profiles, submission history, progress tracking)
@@ -299,132 +296,43 @@ For problem recommendation:
 
 ---
 
-## 6. Research Plan – What Do You Need to Learn? What Experiments Will You Run?
+## 6. User Study Plan
 
-### Learning Objectives
+### Research Ethics
 
-Our research focuses on understanding **how code-level behaviors reveal cognitive learning gaps** in programming interview preparation. To achieve this, the team aims to learn:
+- [X] No IRB needed - IRB Light Checklist completed
+- Data: Anonymized code submissions, interaction logs, survey responses
+- Consent: Adapted course template
 
-1. **Extracting Cognitive Patterns from Code:**  
-   Identify which AST features, structural metrics, and coding behaviors (e.g., missing base cases, nested loops, inefficient algorithms) best indicate recurring conceptual weaknesses.
+### Recruitment
 
-2. **Classifying Mistakes Effectively:**  
-   Determine the most effective feature engineering techniques and ML models (Random Forest, XGBoost, small neural networks) for accurate multi-class error classification.
+- Target: 8-12 CS students (junior/senior level)
+- Method: CS department mailing list, hackathon communities, career services
 
-3. **Measuring Learning Progress Over Time:**  
-   Define metrics that best reflect improvement, such as reduced error recurrence, faster problem-solving, and simpler code structures.
+### Testing Protocol (45 minutes)
 
-4. **Generating Targeted Recommendations:**  
-   Explore algorithms that connect user-specific weaknesses to problem sets through embedding-based similarity and collaborative filtering.
+**Round 1 - Week 8 (Core Functionality):**
+1. **Onboarding (5 min):** Explain platform, get consent
+2. **Problem 1 (10 min):** Solve "Two Sum" - test basic flow
+3. **Problem 2 (10 min):** Solve "Valid Parentheses" - intentionally use suboptimal approach
+4. **Feedback Review (10 min):** Did you understand the weakness detected? Was recommendation relevant?
+5. **Survey (10 min):** SUS score, specific feedback on UI and accuracy
 
-5. **Understanding User Behavior Patterns:**  
-   Analyze how students respond to adaptive feedback — whether they follow suggested problems, revisit mistakes, or seek external explanations.
+**Round 2 - Week 12 (Longitudinal Testing):**
+1. **2-Week Usage (outside session):** Users practice 5+ problems on their own
+2. **Interview (30 min):** Review progress dashboard, discuss pattern detection accuracy
+3. **Comparative Task:** Solve new problem, compare perceived improvement
 
----
+### Success Criteria for Studies
 
-### Experiments
-
-**Experiment 1 – AST Feature Extraction Validation**  
-- **Goal:** Identify which AST-derived metrics correlate most strongly with error categories.  
-- **Method:** Collect ~100 labeled code samples with annotated mistakes and extract 25+ AST metrics.  
-- **Expected Outcome:** Top 5–8 predictive features for accurate classification.
-
-**Experiment 2 – Model Benchmarking**  
-- **Goal:** Compare ML models for multi-class mistake detection.  
-- **Method:** Train Random Forest, XGBoost, and Logistic Regression models on labeled code data.  
-- **Metrics:** Precision, recall, and F1-score per error type.  
-- **Success Criterion:** ≥80% overall classification accuracy.
-
-**Experiment 3 – Feedback Comprehension Test**  
-- **Goal:** Evaluate if users can understand and act upon AI-generated feedback.  
-- **Method:** Provide 10 users feedback on 2–3 problems, then reattempt similar ones.  
-- **Measure:** Improvement rate and self-reported clarity of explanations.
-
-**Experiment 4 – Adaptive Recommendation Validation**  
-- **Goal:** Test if personalized problem recommendations accelerate skill improvement.  
-- **Method:** Conduct A/B test — adaptive recommendations vs. random selection.  
-- **Success Criterion:** ≥25% higher helpfulness ratings in the adaptive group.
-
-**Experiment 5 – Longitudinal Performance Tracking**  
-- **Goal:** Assess if repeated platform use reduces recurring error patterns.  
-- **Method:** Track 10 users over 2 weeks, comparing initial and final mastery scores.  
-- **Success Criterion:** ≥30% reduction in repeated error categories.
+- ≥75% users correctly understand their detected weaknesses
+- ≥70% agree recommendations are relevant
+- ≥60% report feeling more confident after 2 weeks
+- System Usability Scale (SUS) score ≥70
 
 ---
 
-## 7. User Study Plan – How Will You Gather User Feedback?
-
-### Objectives
-
-The user study will assess **usability**, **feedback clarity**, and **perceived accuracy** of the system’s weakness detection and recommendation mechanisms. The main goal is to confirm that AI-driven insights genuinely help users understand and improve their coding interview performance.
-
----
-
-### Methodology
-
-**Participant Recruitment**  
-- **Target:** 8–12 Computer Science students preparing for technical interviews.  
-- **Recruitment Channels:** University mailing lists, Discord communities, peer groups, and hackathon networks.
-
-**Data Collection Methods**  
-- **Observation:** Monitor task flow and user interactions during problem-solving sessions.  
-- **Surveys:** Administer post-session questionnaires (System Usability Scale and 5-point Likert items).  
-- **Interviews:** Conduct semi-structured interviews to collect qualitative insights.  
-- **Usage Logs:** Collect quantitative metrics such as time spent, submission counts, and repeated error frequency.
-
----
-
-### Study Phases
-
-**Phase 1 – Baseline Interaction (Week 8)**  
-Participants solve standard problems, review AI-generated feedback, and rate its clarity and usefulness.
-
-**Phase 2 – Iterative Use (Weeks 9–11)**  
-Users continue practicing on the platform independently; the recommendation engine adapts based on their evolving weakness profiles.
-
-**Phase 3 – Post-Study Evaluation (Week 12)**  
-Conduct follow-up interviews, collect SUS scores, and compare user progress data to measure improvement and satisfaction.
-
----
-
-### Feedback Focus Areas
-
-- Clarity and understandability of detected weaknesses  
-- Relevance of recommended problems  
-- Usefulness of AI explanations for learning  
-- Perceived improvement and confidence gain  
-- Overall platform usability and satisfaction  
-
----
-
-### Analysis Plan
-
-- **Quantitative Analysis:**  
-  Compute average SUS score, perceived accuracy rate, and reduction in repeated error frequency.  
-
-- **Qualitative Analysis:**  
-  Apply thematic analysis to interview data to identify common usability and interpretability issues.  
-
-- **Triangulation:**  
-  Cross-validate subjective feedback (confidence, satisfaction) with objective performance data (error reduction, completion time).
-
----
-
-### Success Criteria
-
-- ≥75% of users find the feedback clear and understandable  
-- ≥70% rate recommendations as relevant to their weaknesses  
-- ≥60% report feeling more confident about interviews after two weeks  
-- Average **SUS score ≥70** (indicating “Good” usability)
-
----
-
-## 8. Team Contract
-
-We've uploaded this file seperately.
-
----
-##  Project Timeline
+## 7. Project Timeline
 
 | Week | Focus | Deliverables | Risk Level |
 |:-----|:------|:------------|:-----------|
@@ -452,7 +360,7 @@ We've uploaded this file seperately.
 
 ---
 
-##  Dataset & Training Plan
+## 8. Dataset & Training Plan
 
 ### Initial Problem Set
 
@@ -470,7 +378,7 @@ We've uploaded this file seperately.
 ### ML Training Data
 
 **Initial Dataset (Manual Labeling):**
-- 100 real student submissions (ask permission to use, all collected submissions will be anonymized, stored securely, and used solely for improving the system in compliance with university data governance policy.)
+- 100 real submissions (ask permission to use)
 - Label each with error type(s)
 - Include optimal solution for comparison
 
@@ -485,26 +393,7 @@ We've uploaded this file seperately.
 
 ---
 
-##  Why This is Complex (Not Just an API Call)
-
-**Compared to basic RAG chatbot:**
-1. **Custom ML Model:** Training error classifier, not just using GPT
-2. **Code Analysis:** Building AST parser and complexity analyzer
-3. **Personalization:** Adaptive recommendation algorithm based on user history
-4. **Execution Environment:** Safe code sandbox integration
-5. **Multi-modal Analysis:** Combining code structure, execution results, and LLM reasoning
-6. **Longitudinal Tracking:** User profile evolution over time
-7. **Real-time Systems:** Editor integration, streaming feedback
-
-**Estimated Complexity:**
-- ~4000 lines of backend code (vs. ~500 for simple RAG)
-- Custom ML pipeline (vs. just API calls)
-- Real-time code execution (vs. static document retrieval)
-- Complex state management (vs. stateless queries)
-
----
-
-##  Future Work (Post-Capstone)
+## 9. Future Work (Post-Capstone)
 
 - **System Design Problems:** Add whiteboarding interface
 - **Mock Interviews:** Timed, full interview simulation
