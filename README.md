@@ -17,24 +17,8 @@
 | Mariam Khokhiashvili | Khokhiashvili.mariam@kiu.edu.ge | @MariamKhoKh | Fullstack |
 ---
 
-
-
 ## Project Overview
-...
-
-...
-
-
-### Key Features
-...
-
-...
-
-
-## Technology Stack
-...
-...
-
+See [docs/capstone-proposal.md](docs/capstone-proposal.md) for project overview and details.
 
 ## Getting Started
 See [docs/setup.md](docs/setup.md) for detailed setup instructions.
@@ -58,4 +42,5 @@ Add the date
 Commit this file with a commit message: "Sign team contract - [Your Name]"
 [Name] agreed on [Date]
 [Name] agreed on [Date]
+
 
