@@ -586,13 +586,13 @@ if using list for lookup and >10 lookups:
 
 ---
 
-## 10. Summary: Key Changes Since Week 2
+## 10. Summary: Week 3-4 Learnings
 
 ### Problem & Solution
 - **Validated problem** with 4 CS students
 - **Narrowed target** to CS students preparing for FAANG interviews
 
-### Technical Architecture
+### Technical Decisions
 - **Simplified ML approach:** Custom model → Rule-based + GPT-4
 - **Reduced scope:** 13 error types → 6 core types
 - **Confirmed execution:** Judge0 API working (with occasional issues)
