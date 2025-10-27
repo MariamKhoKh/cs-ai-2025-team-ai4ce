@@ -92,38 +92,41 @@ Traditional platforms are passive problem banks. AI can:
 
 ### Product Success Metrics
 
-| Metric | Target (Week 15) | Measurement Method | Current Baseline (Week 4) |
-|--------|------------------|-------------------|---------------------------|
-| **Weakness Detection Accuracy** | ≥75% | User survey: "Is this weakness accurate?" after 5 problems | Not yet measured |
-| **Problem Relevance** | ≥70% | Post-solve rating: "Was this helpful for my gaps?" | Not yet measured |
-| **Task Completion Rate** | ≥80% | % of users who complete submit → review → next problem flow | Not yet measured |
-| **Measurable Improvement** | ≥25% reduction | Users show fewer recurring errors after 10 problems vs first 5 | Not yet measured |
-| **User Satisfaction** | ≥4.0/5.0 | Post-testing survey (Week 7 & 14) | Not yet measured |
+| Metric | Target (Week 15) | Measurement Method | Baseline (Week 4) | Purpose / Justification |
+|--------|-----------------|-----------------|-----------------|------------------------|
+| Weakness Detection Accuracy | ≥75% | User survey (“Was this weakness accurate?” after 5 problems) | Not measured | Build trust in feedback system |
+| Problem Recommendation Relevance | ≥70% | Post-solve rating (“Was this problem helpful for your gaps?”) | Not measured | Ensures personalized learning value |
+| Task Completion Rate | ≥80% | % of users completing full solve → feedback → next problem loop | Not measured | Validates usability & engagement |
+| Performance Improvement | ≥25% reduction in repeated error patterns | Compare first 5 vs. next 10 problems | Not measured | Demonstrates measurable learning impact |
+| User Satisfaction | ≥4.0/5.0 | Post-testing survey (Weeks 7 & 14) | Not measured | Gauges overall product experience |
+| Interview Confidence (Proxy) | ≥70% report feeling more confident | End-of-cycle survey | Not measured | Indicates real-world readiness |
 
 ### Technical Success Metrics
 
-| Metric | Target | Measurement Method | Current Performance |
-|--------|--------|-------------------|---------------------|
-| **Code Execution Success** | ≥95% | % of submissions that execute without timeout/error | ~85% (Judge0 occasionally times out) |
-| **Feedback Generation Time** | <10 seconds | Time from submit to feedback displayed | ~12 seconds (needs optimization) |
-| **Pattern Detection Coverage** | ≥5 patterns/user | After 10 problems, detect at least 5 distinct error types | Not yet measured |
-| **API Cost per Query** | <$0.10 | GPT-4 API cost tracking | ~$0.015 (tested on 20 samples) |
-| **AST Parsing Success** | ≥90% | % of valid Python code successfully parsed | ~95% (works well) |
+| Metric | Target | Measurement Method | Current Performance | Purpose |
+|--------|--------|------------------|------------------|---------|
+| Code Execution Success Rate | ≥95% | % of submissions executed successfully | ~85% (Judge0 timeouts) | Ensure reliability of sandbox |
+| Feedback Generation Time | <10s | Time from submission → displayed feedback | ~12s | Maintain user engagement |
+| Pattern Detection Coverage | ≥5 distinct error types per user | Analyzed via AST + ML classifier | Not yet measured | Validates insight depth |
+| API Cost per Query | ≤$0.10 | Track GPT API costs | ~0.015/test | Guarantee scalability |
+| AST Parsing Accuracy | ≥90% | % of valid Python code successfully parsed | ~95% | Confirms technical robustness |
 
-### Learning Goals (Team Level)
+### Learning Goals (Team-Level)
 
-| Team Member | Learning Goal | Success Criteria | Progress (Week 4) |
-|-------------|---------------|------------------|-------------------|
-| [Name 1] | Master code execution sandboxing & security | Successfully integrate Judge0 with proper timeouts/limits | ✅ Basic integration working |
-| [Name 2] | Build AST-based code analysis pipeline | Extract 10+ meaningful features from AST | ✅ Parser working, feature extraction in progress |
-| [Name 3] | Implement adaptive recommendation algorithm | Users rate recommendations as "helpful" ≥70% | Not started (Week 8) |
+| Team Member | Learning Objective | Success Criteria | Progress (Week 4) |
+|------------|------------------|----------------|-----------------|
+| Member 1 | Master code execution sandboxing and resource isolation | Judge0 integrated with custom timeouts & limits | ✅ Basic setup complete |
+| Member 2 | Develop AST-based feature extraction pipeline | Extract ≥10 relevant code features | ✅ Parser functional |
+| Member 3 | Build adaptive recommendation engine | ≥70% of users rate suggestions as “helpful” | ⚙️ Scheduled for Week 8 |
+| Member 4 | Design data visualization dashboard | Display progress metrics (error reduction, accuracy trend) | 🔄 Prototype in progress |
 
-**Why These Metrics Matter:**
-- **75% accuracy** → Users trust the system (lower would destroy credibility)
-- **<10s feedback** → Users won't abandon due to slowness
-- **80% completion** → Core UX is usable
-- **25% improvement** → Demonstrates actual learning value
-
+**Why These Metrics Matter**
+- 75% Weakness Accuracy: Ensures user trust — inaccurate feedback destroys credibility  
+- <10s Feedback Time: Prevents drop-offs during practice  
+- 25% Improvement: Confirms measurable skill growth  
+- 80% Completion Rate: Indicates intuitive and engaging core flow  
+- 70% Confidence Gain: Reflects real-world interview readiness — ultimate success indicator
+  
 ---
 
 ## 4. Technical Architecture (Updated)
