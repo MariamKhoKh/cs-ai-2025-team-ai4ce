@@ -586,34 +586,6 @@ if using list for lookup and >10 lookups:
 
 ---
 
-## 10. Summary: Week 3-4 Learnings
-
-### Problem & Solution
-- **Validated problem** with 4 CS students
-- **Narrowed target** to CS students preparing for FAANG interviews
-
-### Technical Decisions
-- **Simplified ML approach:** Custom model → Rule-based + GPT-4
-- **Reduced scope:** 13 error types → 6 core types
-- **Confirmed execution:** Judge0 API working (with occasional issues)
-- **Removed JavaScript** from MVP (Python only)
-
-### Success Metrics
-- **Added specific targets** (75% accuracy, <10s latency, 4.0/5.0 satisfaction)
-- **Baseline measurements** from Week 4 testing
-
-### Risk Management
-- **Identified Judge0 reliability** as #1 risk
-- **Implemented rate limiting** and cost tracking
-- **Created mitigation plans** for all critical risks
-
-### Realistic Timeline
-- **Adjusted for Week 3 velocity** (~25 hours actual vs 30 planned)
-- **Buffer time for midterms** (Week 9)
-- **Backup scope cuts** defined
-
----
-
 ## 10. Technical Decisions
 
 ### 10.1 Machine Learning Approach
@@ -653,6 +625,34 @@ if using list for lookup and >10 lookups:
   - Cache repeated explanations to save costs and improve latency
 
 ---
+
+## 11. Summary: Week 3-4 Learnings
+
+### Problem & Solution
+- **Validated problem** with 4 CS students
+- **Narrowed target** to CS students preparing for FAANG interviews
+
+### Technical Decisions
+- **Simplified ML approach:** Custom model → Rule-based + GPT-4
+- **Reduced scope:** 13 error types → 6 core types
+- **Confirmed execution:** Judge0 API working (with occasional issues)
+- **Removed JavaScript** from MVP (Python only)
+
+### Success Metrics
+- **Added specific targets** (75% accuracy, <10s latency, 4.0/5.0 satisfaction)
+- **Baseline measurements** from Week 4 testing
+
+### Risk Management
+- **Identified Judge0 reliability** as #1 risk
+- **Implemented rate limiting** and cost tracking
+- **Created mitigation plans** for all critical risks
+
+### Realistic Timeline
+- **Adjusted for Week 3 velocity** (~25 hours actual vs 30 planned)
+- **Buffer time for midterms** (Week 9)
+- **Backup scope cuts** defined
+
+  ---
 ## Review Checklist
 
 - [x] All sections updated from Week 2
