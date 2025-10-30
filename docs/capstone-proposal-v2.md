@@ -614,6 +614,45 @@ if using list for lookup and >10 lookups:
 
 ---
 
+## 10. Technical Decisions
+
+### 10.1 Machine Learning Approach
+- **Original Plan:** Custom ML model (Random Forest) trained on 500+ labeled examples  
+- **Decision:** Switched to **rule-based classifier + GPT-4 for explanations**  
+- **Rationale:** Custom ML model requires extensive labeled data; rule-based heuristics cover ~80% of typical errors, are faster to implement, and allow GPT-4 to handle nuanced explanations.
+
+### 10.2 Scope of Error Categories
+- **Original:** 13 error categories  
+- **Decision:** Reduced to **6 core error patterns** for MVP  
+- **Rationale:** Focused on the most common and high-impact errors to meet timeline and provide meaningful feedback without overwhelming the system.
+
+### 10.3 Language Support
+- **Original:** Python + JavaScript  
+- **Decision:** **Python only for MVP**  
+- **Rationale:** Python AST parsing is already complex; JavaScript AST support deferred for post-course expansion.
+
+### 10.4 Code Execution Engine
+- **Original:** Uncertain between Judge0 and Piston  
+- **Decision:** **Judge0 API**  
+- **Rationale:** More reliable, well-documented, easier integration; fallback to Piston tested if needed.
+
+### 10.5 Database & Caching
+- **Original:** PostgreSQL only  
+- **Decision:** **PostgreSQL + Redis**  
+- **Rationale:** Redis improves performance by caching problem recommendations and speeding up response times.
+
+### 10.6 Security & Cost Controls
+- **Implemented:**
+  - Execution timeouts: 5 seconds max  
+  - Memory limits: 128 MB per execution  
+  - Rate limiting: 20 submissions/hour per user  
+  - Input validation: max 5000 characters  
+  - Cost tracking: monitors GPT-4 API usage  
+- **Planned:**
+  - Prompt optimization to reduce tokens  
+  - Cache repeated explanations to save costs and improve latency
+
+---
 ## Review Checklist
 
 - [x] All sections updated from Week 2
