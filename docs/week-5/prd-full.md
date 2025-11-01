@@ -676,3 +676,5 @@ RAILWAY_TOKEN=your_railway_token
 | **GPT-4 Cost/Day** | <$2 | Google Sheets | >$2.50 |
 | **Pattern Detection Accuracy** | >75% | Weekly review | <70% on golden set |
 | **User Satisfaction** | >
+
+## Step 4...
