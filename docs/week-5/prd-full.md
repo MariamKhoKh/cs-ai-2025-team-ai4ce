@@ -337,11 +337,11 @@ cp .env.example .env
 ```
 # 6. Edit .env file with required credentials
 # Required variables:
-#   - DATABASE_URL=postgresql://user:pass@host:5432/dbname
-#   - REDIS_URL=redis://localhost:6379
-#   - JUDGE0_API_KEY=your_judge0_key
-#   - OPENAI_API_KEY=sk-...
-#   - CLERK_SECRET_KEY=sk_test_...
+###  - DATABASE_URL=postgresql://user:pass@host:5432/dbname
+###  - REDIS_URL=redis://localhost:6379
+###  - JUDGE0_API_KEY=your_judge0_key
+###  - OPENAI_API_KEY=sk-...
+###  - CLERK_SECRET_KEY=sk_test_...
 
 # 7. Run database migrations
 ```
