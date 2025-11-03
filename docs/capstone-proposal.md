@@ -351,7 +351,7 @@ Analyze how students respond to adaptive feedback — whether they follow sugges
 
 ---
 
-## 7. Project Timeline
+## 8. Project Timeline
 
 | Week | Focus | Deliverables | Risk Level |
 |:-----|:------|:------------|:-----------|
