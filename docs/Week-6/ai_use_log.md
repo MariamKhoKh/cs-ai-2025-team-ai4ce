@@ -3,6 +3,7 @@
 **Project:** CodeMentor AI  
 **Team:** AI4ce
 
+
 | Tool | Used For | Description |
 |------|-----------|--------------|
 | Claude (Anthropic) | Pydantic model structure | Asked: "How do we create Pydantic models with Field validation and Literal types for code analysis?" Generated base structure for CodeAnalysisResponse, RecommendationResponse, ProgressTrackingResponse |
