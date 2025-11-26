@@ -1,0 +1,61 @@
+# Grading Checklist - Week 6 & 7 Combined Homework
+
+**Team Name:** AI4ce  
+**Project Title:** CodeMentor AI - Technical Interview Prep with Personalized Weakness Detection  
+**Submission Date:** November 26, 2025  
+**Team Members:** Mariam Khokhiashvili, Gvantsa Tchuradze, Davit Karoiani, Tinatin Javakhadze
+
+---
+
+## Part A: Week 6 - Function Calling (110 points)
+
+### Functions Implementation (40 points)
+- [x] **Function 1:** analyze_code_submission - Located at: `src/backend/functions/tools.py`
+- [x] **Function 2:** get_recommended_problem - Located at: `src/backend/functions/tools.py`
+- [x] **Function 3:** track_user_progress - Located at: `src/backend/functions/tools.py`
+- [x] Pydantic models defined at: `src/backend/models/function_models.py`
+- [x] JSON schemas defined at: `src/backend/ai/agent.py`
+
+### Tests & Demo (30 points)
+- [x] Test file located at: `tests/test_functions.py`
+- [?] Demo video: Instead of a video we have demo.py which shows the functionality like the video would have done
+
+### GitHub (10 points)
+- [x] Descriptive commit messages used: ✅ Yes
+- [x] .env is NOT in repo: ✅ Confirmed
+- [x] .env.example exists: ✅ Yes
+- [x] All files pushed to main branch: ✅ Confirmed
+
+### Evaluation & Safety Logs (10 points)
+Located in: `docs/Week6`
+- [x] `evaluation_notes.md`
+- [x] `safety_checklist.md`
+- [x] `ai_use_log.md`
+- [x] `capstone_link.md`
+
+---
+
+## Part B: Week 7 - Design Review (5 points)
+
+### Main Documents
+- [] Design Review Document: `docs/design-review-week7.md` 
+- [] Event Schemas: `docs/event-schemas.md` 
+- [] Updated Architecture Diagram: `docs/architecture-week7.png` 
+
+### Design Review Sections Completed 
+- [] Section 1: Architecture Validation 
+- [] Section 2: Event Schema Documentation 
+- [] Section 3: Smoke Test Results
+- [] Section 4: Performance Baseline 
+- [] Section 5: Hypothesis Validation 
+- [] Section 6: Readiness Assessment 
+
+
+---
+
+
+**Next steps:**
+1. Integrate Judge0 API for real code execution
+2. Add PostgreSQL database for user profiles
+3. Build React frontend with code editor
+4. Deploy to production environment
