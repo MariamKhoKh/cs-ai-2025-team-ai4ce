@@ -1,167 +1,646 @@
-Event Schemas (7 Critical Types)
-Code Submission
-json{
+# Event Schemas Documentation
+
+**Project:** CodeMentor AI  
+**Team:** AI4ce  
+**Last Updated:** November 26, 2025
+
+This document defines the precise JSON schemas for all events in our system. These schemas serve as contracts between components and ensure data consistency.
+
+---
+
+## Schema Format Guidelines
+
+All schemas follow JSON Schema specification (draft-07). Each schema includes:
+- **Event type identifier** - Unique name for this event
+- **Field definitions** - Name, type, description for each field
+- **Required fields** - Which fields must be present
+- **Validation rules** - Constraints on field values (length, range, format)
+- **Example instance** - At least one realistic example
+
+---
+
+## 1. Code Submission Event
+
+**Purpose:** Captures user code submission for analysis
+
+**When triggered:** User submits code via CLI interface
+
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "CodeSubmissionEvent",
+  "description": "Event triggered when user submits code for analysis",
+  "required": ["event_type", "timestamp", "problem_id", "user_code", "language"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "code_submission",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when code was submitted"
+    },
+    "user_id": {
+      "type": "string",
+      "pattern": "^user_[0-9]+$",
+      "default": "user_001",
+      "description": "Unique user identifier"
+    },
+    "problem_id": {
+      "type": "string",
+      "pattern": "^[a-z-]+$",
+      "description": "Problem identifier (e.g., 'two-sum', 'reverse-string')"
+    },
+    "user_code": {
+      "type": "string",
+      "minLength": 1,
+      "description": "User's submitted code as a string"
+    },
+    "language": {
+      "type": "string",
+      "enum": ["python", "javascript"],
+      "description": "Programming language of the submission"
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
   "event_type": "code_submission",
   "timestamp": "2025-11-26T10:30:00Z",
   "user_id": "user_001",
   "problem_id": "two-sum",
-  "user_code": "def two_sum(nums, target): ...",
+  "user_code": "def two_sum(nums, target):\n    for i in range(len(nums)):\n        for j in range(i+1, len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i, j]",
   "language": "python"
 }
-Analysis Response
-json{
+```
+
+---
+
+## 2. Code Analysis Response Event
+
+**Purpose:** System's response after analyzing submitted code
+
+**When triggered:** analyze_code_submission() function completes
+
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "CodeAnalysisResponseEvent",
+  "description": "Event triggered when code analysis completes",
+  "required": ["event_type", "timestamp", "submission_id", "problem_id", "test_results", "all_tests_passed"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "analysis_response",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when analysis completed"
+    },
+    "submission_id": {
+      "type": "string",
+      "pattern": "^sub_[a-f0-9]{8}$",
+      "description": "Unique identifier for this submission"
+    },
+    "problem_id": {
+      "type": "string",
+      "description": "Problem that was analyzed"
+    },
+    "test_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["test_name", "passed", "expected", "actual"],
+        "properties": {
+          "test_name": {"type": "string"},
+          "passed": {"type": "boolean"},
+          "expected": {"type": "string"},
+          "actual": {"type": "string"},
+          "error_message": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "all_tests_passed": {
+      "type": "boolean",
+      "description": "True if all test cases passed"
+    },
+    "detected_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern_type", "severity", "description"],
+        "properties": {
+          "pattern_type": {
+            "type": "string",
+            "enum": ["edge_case_missing", "suboptimal_time_complexity", "suboptimal_space_complexity", "wrong_data_structure", "off_by_one", "boundary_condition", "poor_naming", "missing_validation", "inefficient_loops", "missing_base_case", "ignoring_constraints", "hardcoding", "duplicate_handling"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "time_complexity": {
+      "type": "string",
+      "pattern": "^O\\(.+\\)$",
+      "description": "Estimated time complexity in Big-O notation"
+    },
+    "space_complexity": {
+      "type": "string",
+      "pattern": "^O\\(.+\\)$",
+      "description": "Estimated space complexity in Big-O notation"
+    },
+    "execution_time_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Execution time in milliseconds"
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
   "event_type": "analysis_response",
+  "timestamp": "2025-11-26T10:30:02Z",
   "submission_id": "sub_abc12345",
+  "problem_id": "two-sum",
+  "test_results": [
+    {
+      "test_name": "Test 1: Basic case",
+      "passed": true,
+      "expected": "[0,1]",
+      "actual": "[0,1]",
+      "error_message": null
+    }
+  ],
   "all_tests_passed": false,
-  "test_results": [{"test_name": "Test 1", "passed": true, ...}],
   "detected_patterns": [
-    {"pattern_type": "edge_case_missing", "severity": "high"}
+    {
+      "pattern_type": "edge_case_missing",
+      "severity": "high",
+      "description": "Code doesn't check for empty or null inputs"
+    },
+    {
+      "pattern_type": "suboptimal_time_complexity",
+      "severity": "medium",
+      "description": "Nested loops detected - O(n²) complexity"
+    }
   ],
   "time_complexity": "O(n²)",
+  "space_complexity": "O(1)",
   "execution_time_ms": 45.2
 }
-Progress Update
-json{
+```
+
+---
+
+## 3. Progress Update Event
+
+**Purpose:** Updates user's weakness profile after submission
+
+**When triggered:** track_user_progress() function executes
+
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "ProgressUpdateEvent",
+  "description": "Event triggered when updating user progress",
+  "required": ["event_type", "timestamp", "user_id", "problem_id", "detected_patterns", "solved_correctly"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "progress_update",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of update"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User whose progress is being tracked"
+    },
+    "problem_id": {
+      "type": "string",
+      "description": "Problem that was attempted"
+    },
+    "detected_patterns": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of error pattern types detected"
+    },
+    "time_taken_minutes": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Time spent on problem in minutes"
+    },
+    "attempts_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of submission attempts"
+    },
+    "solved_correctly": {
+      "type": "boolean",
+      "description": "Whether all tests passed"
+    },
+    "updated_weaknesses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern_type", "mastery_score", "trend"],
+        "properties": {
+          "pattern_type": {"type": "string"},
+          "mastery_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "0-100 score, higher is better"
+          },
+          "trend": {
+            "type": "string",
+            "enum": ["improving", "stable", "declining"]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
   "event_type": "progress_update",
+  "timestamp": "2025-11-26T10:30:03Z",
   "user_id": "user_001",
-  "detected_patterns": ["edge_case_missing"],
+  "problem_id": "two-sum",
+  "detected_patterns": ["edge_case_missing", "suboptimal_time_complexity"],
+  "time_taken_minutes": 12.5,
+  "attempts_count": 2,
   "solved_correctly": false,
   "updated_weaknesses": [
-    {"pattern_type": "edge_case_missing", "mastery_score": 40.0, "trend": "declining"}
+    {
+      "pattern_type": "edge_case_missing",
+      "mastery_score": 40.0,
+      "trend": "declining"
+    },
+    {
+      "pattern_type": "suboptimal_time_complexity",
+      "mastery_score": 55.0,
+      "trend": "declining"
+    }
   ]
 }
-Recommendation Request/Response
-json// Request
-{"event_type": "recommendation_request", "user_id": "user_001", "difficulty_level": "medium"}
+```
 
-// Response
+---
+
+## 4. Problem Recommendation Request Event
+
+**Purpose:** User requests next problem to practice
+
+**When triggered:** User asks for recommendation via agent
+
+**Schema:**
+```json
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "ProblemRecommendationRequestEvent",
+  "description": "Event triggered when user requests problem recommendation",
+  "required": ["event_type", "timestamp", "user_id"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "recommendation_request",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of request"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User requesting recommendation"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"],
+      "description": "Desired difficulty level (optional)"
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
+  "event_type": "recommendation_request",
+  "timestamp": "2025-11-26T10:31:00Z",
+  "user_id": "user_001",
+  "difficulty_level": "medium"
+}
+```
+
+---
+
+## 5. Problem Recommendation Response Event
+
+**Purpose:** System's response with recommended problem
+
+**When triggered:** get_recommended_problem() function completes
+
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "ProblemRecommendationResponseEvent",
+  "description": "Event triggered when returning problem recommendation",
+  "required": ["event_type", "timestamp", "recommended_problem", "recommendation_reason"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "recommendation_response",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of response"
+    },
+    "recommended_problem": {
+      "type": "object",
+      "required": ["problem_id", "title", "difficulty", "target_patterns"],
+      "properties": {
+        "problem_id": {"type": "string"},
+        "title": {"type": "string"},
+        "difficulty": {
+          "type": "string",
+          "enum": ["easy", "medium", "hard"]
+        },
+        "target_patterns": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Error patterns this problem helps practice"
+        }
+      }
+    },
+    "recommendation_reason": {
+      "type": "string",
+      "description": "Explanation of why this problem was chosen"
+    },
+    "user_weakness_areas": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "User's top weakness areas"
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
+  "event_type": "recommendation_response",
+  "timestamp": "2025-11-26T10:31:01Z",
   "recommended_problem": {
     "problem_id": "valid-parentheses",
+    "title": "Valid Parentheses",
     "difficulty": "medium",
-    "target_patterns": ["edge_case_missing"]
+    "target_patterns": ["edge_case_missing", "wrong_data_structure"]
   },
-  "recommendation_reason": "Targets your weakest area: 40/100 mastery"
+  "recommendation_reason": "Targets your weakest area: edge_case_missing (40/100 mastery). Also practices stack data structures.",
+  "user_weakness_areas": ["edge_case_missing", "suboptimal_time_complexity", "wrong_data_structure"]
 }
-Error Event
-json{
+```
+
+---
+
+## 6. Error Event
+
+**Purpose:** Captures any system error
+
+**When triggered:** Exception caught anywhere in request pipeline
+
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "ErrorEvent",
+  "description": "Event triggered when an error occurs",
+  "required": ["event_type", "timestamp", "error_type", "message", "component"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "error",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when error occurred"
+    },
+    "error_type": {
+      "type": "string",
+      "enum": ["validation_error", "api_error", "database_error", "function_execution_error", "timeout_error", "unknown_error"],
+      "description": "Category of error"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable error message"
+    },
+    "component": {
+      "type": "string",
+      "description": "Which system component threw the error",
+      "examples": ["agent", "analyze_code_submission", "get_recommended_problem", "database"]
+    },
+    "user_id": {
+      "type": ["string", "null"],
+      "description": "User ID if error is user-specific"
+    },
+    "stack_trace": {
+      "type": ["string", "null"],
+      "description": "Full stack trace for debugging"
+    }
+  }
+}
+```
+
+**Example Instance:**
+```json
+{
   "event_type": "error",
+  "timestamp": "2025-11-26T10:32:15Z",
   "error_type": "api_error",
   "message": "Gemini API rate limit exceeded",
   "component": "agent",
-  "stack_trace": "..."
+  "user_id": "user_001",
+  "stack_trace": "Traceback (most recent call last):\n  File \"agent.py\", line 87, in send_message\n    response = self.chat.send_message(user_message)\nRateLimitError: Quota exceeded"
 }
 ```
 
-**Validation Rules:**
-- Timestamps: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)
-- User IDs: `^user_[0-9]+$`
-- Problem IDs: lowercase with hyphens
-- Mastery scores: 0-100
-- Complexity: `O(...)` format
-
 ---
 
-## 3. Smoke Test Results
+## 7. Function Call Event
 
-**17/17 tests passed** in 0.38s
+**Purpose:** Documents function invocation by Gemini agent
 
-| Test Category | Pass/Fail | Evidence |
-|--------------|-----------|----------|
-| End-to-end workflow | ✅ | All 3 functions chain correctly |
-| Function 1 (analyze) | ✅ | 5/5 tests pass |
-| Function 2 (recommend) | ✅ | 4/4 tests pass |
-| Function 3 (track) | ✅ | 5/5 tests pass |
-| Pydantic validation | ✅ | All models validate |
-| Error handling | ✅ | Graceful fallbacks |
-| Performance | ✅ | All <50ms |
-| Gemini integration | ✅ | Function calling works |
+**When triggered:** Agent calls any of the three functions
 
-**Coverage:** 94% tools.py, 100% models.py, 72% agent.py
-
----
-
-## 4. Performance Baseline
-
-### Latency (25 requests/function)
-| Metric | analyze_code | recommend | track | Target | Status |
-|--------|-------------|-----------|-------|--------|--------|
-| p50 | 45ms | 12ms | 8ms | <500ms | ✅ |
-| p95 | 51ms | 14ms | 9ms | <1s | ✅ |
-| p99 | 55ms | 15ms | 10ms | <2s | ✅ |
-
-### Token Usage & Cost
-- Input: 300-500 tokens
-- Output: 150-300 tokens
-- **Cost per request: $0.000032**
-- **100 users/day: $0.96/month**
-- **1,000 users/day: $9.60/month**
-
-### Bottlenecks
-- **Current:** Pattern detection (45ms) - not critical
-- **Future (Week 7):** Judge0 API (500-2000ms) - will cache identical submissions
-- **Week 8+:** Database queries - will add indexing
-
----
-
-## 5. Hypothesis Validation
-
-**Hypothesis:** Rule-based pattern detection (regex, counting loops) can identify 3/5 common weaknesses.
-
-**Test Set:** 20 "Two Sum" solutions (5 edge case issues, 5 nested loops, 5 wrong data structure, 5 clean)
-
-**Results:**
-| Pattern | Precision | Recall | F1 |
-|---------|-----------|--------|-----|
-| edge_case_missing | 100% (5/5) | 80% (4/5) | 88.9% |
-| suboptimal_time | 80% (4/5) | 100% (4/4) | 88.9% |
-| wrong_data_structure | 60% (3/5) | 100% (3/3) | 75.0% |
-| **Overall** | **80%** | **93%** | **86%** |
-
-**False Positives:** 3 (flagged list as wrong data structure when appropriate)  
-**False Negatives:** 1 (missed "if arr:" edge case pattern)
-
-**Conclusion:** ✅ Hypothesis confirmed. 86% F1 exceeds 60% bar. Rule-based sufficient for MVP. ML classifier planned Week 12+.
-
-**Action Items:**
-- Expand edge case regex to include "if arr:", "if len(arr)==0"
-- Improve data structure heuristic to check problem requirements
-- Add AST parsing for complexity (Week 8)
-
----
-
-## 6. Readiness Assessment
-
-### Can handle 5-20x scale?
-**Yes** for Week 8. Current: 46ms @ 50 req/day. At 20x (1,000 req/day): ~60ms. Gemini has no rate limits at our tier.
-
-### Error handlers robust?
-**Mostly.** Current: try-catch blocks, Pydantic validation, fallbacks. **Missing:** retry logic, timeouts. **Action:** Add max_retries=3 + exponential backoff before Week 8.
-
-### Cost sustainable?
-**Yes for beta.** With Judge0 (Week 7): 100 users = $390/mo. 1,000 users = $3,610/mo (need self-hosted Judge0).
-
-### Must fix before Week 8:
-1. ⚠️ **No retry logic** - Add max_retries=3, exponential backoff (CRITICAL)
-2. ⚠️ **No timeouts** - Add 5s timeout decorator (CRITICAL)
-3. 📅 **Judge0 integration** - Complete by Nov 27 (HIGH)
-4. 📅 **PostgreSQL** - Schema Week 8, implement Week 9 (MEDIUM)
-
-### Readiness Score: **8.3/10** ✅ Ready with fixes
-
----
-
-## Test Output Summary
+**Schema:**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "FunctionCallEvent",
+  "description": "Event triggered when Gemini agent calls a function",
+  "required": ["event_type", "timestamp", "function_name", "arguments"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "function_call",
+      "description": "Event type identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when function was called"
+    },
+    "function_name": {
+      "type": "string",
+      "enum": ["analyze_code_submission", "get_recommended_problem", "track_user_progress"],
+      "description": "Name of function being called"
+    },
+    "arguments": {
+      "type": "object",
+      "description": "Function-specific arguments passed to the call"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User who initiated the conversation"
+    },
+    "success": {
+      "type": "boolean",
+      "description": "Whether function executed successfully"
+    },
+    "execution_time_ms": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Function execution time in milliseconds"
+    }
+  }
+}
 ```
-17 passed in 0.38s
-- analyze_code: 42.5ms avg
-- recommend: 11.2ms avg  
-- track: 7.9ms avg
-Coverage: 94% tools, 100% models, 72% agent
-Hypothesis Validation Data (20 solutions)
 
-TP (True Positive): 12
-FP (False Positive): 3
-FN (False Negative): 1
-TN (True Negative): 4
-Accuracy: 80% | F1: 86%
+**Example Instance:**
+```json
+{
+  "event_type": "function_call",
+  "timestamp": "2025-11-26T10:30:01Z",
+  "function_name": "analyze_code_submission",
+  "arguments": {
+    "problem_id": "two-sum",
+    "user_code": "def two_sum(nums, target):\n    for i in range(len(nums)):\n        for j in range(i+1, len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i, j]",
+    "language": "python",
+    "user_id": "user_001"
+  },
+  "user_id": "user_001",
+  "success": true,
+  "execution_time_ms": 45.2
+}
+```
+
+---
+
+## Schema Validation Rules
+
+### General Rules (Apply to All Events)
+- **Timestamps:** Must be ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- **User IDs:** Must match pattern `^user_[0-9]+$` (e.g., "user_001")
+- **Problem IDs:** Must be lowercase with hyphens (e.g., "two-sum")
+- **Enum Fields:** Must exactly match one of the allowed values (case-sensitive)
+
+### Specific Validation Rules
+- **Mastery Scores:** Between 0 and 100 (inclusive), up to 1 decimal place
+- **Complexity Notation:** Must start with "O(" and end with ")" (e.g., "O(n)", "O(n²)")
+- **Language Field:** Only "python" or "javascript" (lowercase, case-sensitive)
+- **Submission IDs:** Format "sub_" followed by 8 hexadecimal characters
+
+---
+
+## Schema Validation Implementation
+
+### Python (using Pydantic)
+```python
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Optional, List
+
+class CodeSubmissionEvent(BaseModel):
+    event_type: str = Field("code_submission", const=True)
+    timestamp: datetime
+    user_id: str = Field(pattern=r"^user_[0-9]+$", default="user_001")
+    problem_id: str = Field(pattern=r"^[a-z-]+$")
+    user_code: str = Field(min_length=1)
+    language: str = Field(pattern=r"^(python|javascript)$")
+```
+
+---
+
+## Testing Your Schemas
+
+### Validation Tests
+For each schema, test:
+1. **Valid instance passes** - Correct data validates successfully ✓
+2. **Missing required field fails** - Validation catches missing fields ✓
+3. **Invalid type fails** - Wrong types are rejected ✓
+4. **Constraint violations fail** - Length/range limits enforced ✓
+5. **Optional fields work** - Can be present or absent ✓
+
+---
+
+## Event Flow Diagram
+```
+User Input → Agent → analyze_code_submission() → track_user_progress() → get_recommended_problem() → Response
+     ↓         ↓              ↓                           ↓                          ↓                    ↓
+(code_submission) (function_call) (analysis_response) (progress_update) (recommendation_response) (final output)
+```
+
+---
+
+## Change Log
+
+| Date | Version | Changes |
+|------|---------|---------|
+| 2025-11-26 | 1.0 | Initial schemas for Week 6 functions |
+
+---
+
+## Future Additions (Planned for Week 8+)
+- Database Transaction Event
+- User Authentication Event
+- Judge0 Execution Request/Response Events
+- Frontend Interaction Events
+- Cache Hit/Miss Events
