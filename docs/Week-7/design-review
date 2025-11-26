@@ -9,7 +9,7 @@
 
 CodeMentor AI is an intelligent technical interview preparation platform that analyzes user code submissions, detects weakness patterns, and provides personalized problem recommendations. This design review validates our Week 6 implementation and assesses readiness for Week 8 agent orchestration.
 
-**Current Status:** ✅ Core functions implemented and tested  
+**Current Status:** Core functions implemented and tested  
 **Test Results:** 17/17 tests passing  
 **Performance:** 8-46ms average latency (well under targets)  
 **Readiness:** Ready for Judge0 integration; database and frontend planned
@@ -173,8 +173,6 @@ Our Week 6 implementation closely follows the Week 2 proposal with minor refinem
 
 ## Section 2: Event Schema Documentation
 
-See [`docs/event-schemas.md`](./event-schemas.md) for complete JSON schemas.
-
 ### 2.1 Critical Event Types
 
 Our system has 5 critical event types that drive all functionality:
@@ -257,7 +255,7 @@ Our system has 5 critical event types that drive all functionality:
 **Date:** November 26, 2025  
 **Environment:** Local development (Python 3.11, macOS)  
 **Test Command:** `pytest tests/test_functions.py -v`  
-**Result:** ✅ 17/17 tests passed (0 failed)
+**Result:**  17/17 tests passed (0 failed)
 
 ### 3.2 Smoke Test Checklist
 
@@ -447,7 +445,7 @@ Solution 13: Wrong data structure detected ✅ (TP)
 Solution 14: Wrong data structure flagged incorrectly ❌ (FP - list was appropriate)
 Solution 15: Wrong data structure flagged incorrectly ❌ (FP - used array indexing)
 
-Solution 16-20: Clean solutions, no false positives ✅
+Solution 16-20: Clean solutions, no false positives 
 ```
 
 ### 5.4 Interpretation
@@ -492,7 +490,7 @@ Solution 16-20: Clean solutions, no false positives ✅
 | 20x scale | 1,000 | ~60ms | Potential Gemini queue | ⚠️ |
 | 100x scale | 5,000 | ~100ms+ | Gemini rate limits | ❌ |
 
-**Verdict:** ✅ **Yes, system can handle 5-20x scale** for Week 8 agent loops.
+**Verdict:**  **Yes, system can handle 5-20x scale** for Week 8 agent loops.
 
 **Mitigation for 100x:**
 - Implement request queuing
@@ -502,10 +500,10 @@ Solution 16-20: Clean solutions, no false positives ✅
 ### 6.2 Are Error Handlers Robust for Agent Loops?
 
 **Current Error Handling:**
-- ✅ All functions have try-catch blocks
-- ✅ Pydantic validates all inputs
-- ✅ Invalid problem IDs return safe fallbacks
-- ✅ Missing users create default profiles
+-  All functions have try-catch blocks
+-  Pydantic validates all inputs
+-  Invalid problem IDs return safe fallbacks
+-  Missing users create default profiles
 
 **Agent Loop Concerns:**
 | Risk | Current Mitigation | Robustness | Action Needed |
@@ -515,7 +513,7 @@ Solution 16-20: Clean solutions, no false positives ✅
 | Function result parsing | Pydantic validates | ✅ | None |
 | Invalid function args | Pydantic validates | ✅ | None |
 
-**Verdict:** ⚠️ **Mostly ready, needs retry logic improvements for Week 8.**
+**Verdict:**  **Mostly ready, needs retry logic improvements for Week 8.**
 
 **Action Items:**
 - [ ] Add `max_retries=3` parameter to agent
@@ -532,16 +530,16 @@ Solution 16-20: Clean solutions, no false positives ✅
 **With Judge0 (Week 7+):**
 - Judge0 Basic: $0.004 per execution
 - 1,000 users × 10 requests/day × 3 test cases = 30,000 executions/day
-- **$120/day = $3,600/month** 😱
+- **$120/day = $3,600/month** 
 
 **Analysis:**
 | Usage Tier | Users/Day | Gemini Cost | Judge0 Cost | Total/Month | Sustainable? |
 |------------|-----------|-------------|-------------|-------------|--------------|
-| Beta (current) | 10 | $0.10 | $0 (mock) | $3 | ✅ Yes |
-| Small (target) | 100 | $1.00 | $360 | $390 | ⚠️ Depends on revenue |
-| Medium | 1,000 | $10.00 | $3,600 | $3,610 | ❌ No (need optimization) |
+| Beta (current) | 10 | $0.10 | $0 (mock) | $3 |  Yes |
+| Small (target) | 100 | $1.00 | $360 | $390 |  Depends on revenue |
+| Medium | 1,000 | $10.00 | $3,600 | $3,610 |  No (need optimization) |
 
-**Verdict:** ⚠️ **Current model sustainable for beta, needs optimization for growth.**
+**Verdict:**  **Current model sustainable for beta, needs optimization for growth.**
 
 **Cost Optimization Plan:**
 1. **Tier 1 (Week 7):** Cache identical code submissions → 30% reduction
@@ -552,38 +550,38 @@ Solution 16-20: Clean solutions, no false positives ✅
 ### 6.4 What Must Be Fixed Before Week 8?
 
 **Critical Blockers (MUST FIX):**
-1. ❌ **No retry logic for Gemini API failures**
+1.  **No retry logic for Gemini API failures**
    - Impact: Agent loops will crash on transient errors
    - Fix: Add max_retries=3 with exponential backoff
    - Owner: [Assign team member]
    - Deadline: Before Week 8 lab (Dec 3)
 
-2. ❌ **No timeout handling for long-running functions**
+2.  **No timeout handling for long-running functions**
    - Impact: Agent could hang indefinitely
    - Fix: Add timeout decorator (5s max per function)
    - Owner: [Assign team member]
    - Deadline: Before Week 8 lab
 
 **High Priority (SHOULD FIX):**
-3. ⚠️ **Judge0 integration not started**
+3.  **Judge0 integration not started**
    - Impact: Can't test real code execution
    - Fix: Complete Judge0 API integration
    - Owner: [Assign team member]
    - Deadline: End of Week 7 (Nov 27)
 
-4. ⚠️ **No database persistence**
+4.  **No database persistence**
    - Impact: All data lost on restart
    - Fix: PostgreSQL schema + SQLAlchemy models
    - Owner: [Assign team member]
    - Deadline: Week 8 (Dec 1-7)
 
 **Nice to Have (CAN WAIT):**
-5. 📋 **Pattern detection heuristics are basic**
+5.  **Pattern detection heuristics are basic**
    - Impact: Some false positives/negatives
    - Fix: Improve regex patterns, add more checks
    - Timeline: Incremental improvements Week 9-11
 
-6. 📋 **No ML classifier for patterns**
+6.  **No ML classifier for patterns**
    - Impact: Limited accuracy on complex cases
    - Fix: Train classifier on 500+ examples
    - Timeline: Research Week 10-11, implement Week 12+
@@ -619,6 +617,6 @@ CodeMentor AI's Week 6 implementation successfully validates our architecture. A
 3. Build PostgreSQL persistence (Week 8)
 4. Deploy frontend (Week 9)
 
-**Readiness Verdict:** ✅ **READY for Week 8 agent orchestration** with planned fixes.
+**Readiness Verdict:**  **READY for Week 8 agent orchestration** with planned fixes.
 
 ---
