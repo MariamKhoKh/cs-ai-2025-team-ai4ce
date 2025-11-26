@@ -23,7 +23,7 @@ CodeMentor AI is an intelligent technical interview preparation platform that an
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         USER INTERFACE                          │
-│                    (CLI - Week 6 / React - Week 9)              │
+│                    (CLI - Week 6 - Week 8)                      │
 └────────────────────────────┬────────────────────────────────────┘
                              │
                              ▼
@@ -60,8 +60,8 @@ CodeMentor AI is an intelligent technical interview preparation platform that an
 
 ### 1.2 Component Descriptions
 
-**Gemini AI Agent (`src/ai/agent.py`)**
-- **Technology:** Google Gemini 1.5 Flash (gemini-2.5-flash)
+**Gemini AI Agent (`src/backend/ai/agent.py`)**
+- **Technology:** Google gemini-2.5-flash
 - **Purpose:** Orchestrates function calling, maintains conversation context
 - **Key Methods:** 
   - `start_conversation()` - Initializes chat session
