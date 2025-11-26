@@ -5,27 +5,30 @@ Environment: Python 3.11, macOS, Windows
 Command: pytest tests/test_functions.py -v
 ===================================================================
 
-collected 17 items
+====================================================================================== test session starts =======================================================================================
+platform win32 -- Python 3.13.7, pytest-9.0.0, pluggy-1.6.0 -- C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\tests
+collected 16 items                                                                                                                                                                                
 
-tests/test_functions.py::test_analyze_code_basic PASSED                    [  5%]
-tests/test_functions.py::test_analyze_code_edge_case_detection PASSED     [ 11%]
-tests/test_functions.py::test_analyze_code_complexity_detection PASSED    [ 17%]
-tests/test_functions.py::test_analyze_code_error_handling PASSED          [ 23%]
-tests/test_functions.py::test_analyze_code_performance PASSED             [ 29%]
-tests/test_functions.py::test_get_recommendation_basic PASSED             [ 35%]
-tests/test_functions.py::test_get_recommendation_difficulty_levels PASSED [ 41%]
-tests/test_functions.py::test_get_recommendation_targets_weakness PASSED  [ 47%]
-tests/test_functions.py::test_get_recommendation_error_handling PASSED    [ 52%]
-tests/test_functions.py::test_track_progress_basic PASSED                 [ 58%]
-tests/test_functions.py::test_track_progress_weakness_update PASSED       [ 64%]
-tests/test_functions.py::test_track_progress_improvement PASSED           [ 70%]
-tests/test_functions.py::test_track_progress_next_focus PASSED            [ 76%]
-tests/test_functions.py::test_track_progress_error_handling PASSED        [ 82%]
-tests/test_functions.py::test_full_workflow PASSED                        [ 88%]
-tests/test_functions.py::test_latency_all_functions PASSED                [ 94%]
-tests/test_functions.py PASSED                                            [100%]
+test_functions.py::test_analyze_code_basic PASSED                                                                                                                                           [  6%] 
+test_functions.py::test_analyze_code_edge_case_detection PASSED                                                                                                                             [ 12%] 
+test_functions.py::test_analyze_code_complexity_detection PASSED                                                                                                                            [ 18%] 
+test_functions.py::test_analyze_code_error_handling PASSED                                                                                                                                  [ 25%] 
+test_functions.py::test_analyze_code_performance PASSED                                                                                                                                     [ 31%] 
+test_functions.py::test_get_recommendation_basic PASSED                                                                                                                                     [ 37%] 
+test_functions.py::test_get_recommendation_difficulty_levels PASSED                                                                                                                         [ 43%] 
+test_functions.py::test_get_recommendation_targets_weakness PASSED                                                                                                                          [ 50%] 
+test_functions.py::test_get_recommendation_error_handling PASSED                                                                                                                            [ 56%] 
+test_functions.py::test_track_progress_basic PASSED                                                                                                                                         [ 62%] 
+test_functions.py::test_track_progress_weakness_update PASSED                                                                                                                               [ 68%] 
+test_functions.py::test_track_progress_improvement PASSED                                                                                                                                   [ 75%] 
+test_functions.py::test_track_progress_next_focus PASSED                                                                                                                                    [ 81%] 
+test_functions.py::test_track_progress_error_handling PASSED                                                                                                                                [ 87%] 
+test_functions.py::test_full_workflow PASSED                                                                                                                                                [ 93%] 
+test_functions.py::test_latency_all_functions PASSED                                                                                                                                        [100%] 
 
-========================== 17 passed in 0.38s ===========================
+======================================================================================= 16 passed in 0.05s ======================================================================================= 
 
 ===================================================================
 Detailed Test Results
