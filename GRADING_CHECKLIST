@@ -3,7 +3,6 @@
 **Team Name:** AI4ce  
 **Project Title:** CodeMentor AI - Technical Interview Prep with Personalized Weakness Detection  
 **Submission Date:** November 26, 2025  
-**Team Members:** [Add your team member names here]
 
 ---
 
@@ -14,21 +13,15 @@
 - [x] **Function 2:** get_recommended_problem - Located at: `src/backend/functions/tools.py`
 - [x] **Function 3:** track_user_progress - Located at: `src/backend/functions/tools.py`
 - [x] Pydantic models defined at: `src/backend/models/function_models.py`
-- [x] JSON schemas defined at: `src/ai/agent.py`
-
-**Quick Navigation:**
-- Functions code: [https://github.com/YOUR_USERNAME/YOUR_REPO/blob/main/src/backend/functions/tools.py]
-- Models code: [https://github.com/YOUR_USERNAME/YOUR_REPO/blob/main/src/backend/models/function_models.py]
-- Agent/orchestration: [https://github.com/YOUR_USERNAME/YOUR_REPO/blob/main/src/ai/agent.py]
+- [x] JSON schemas defined at: `src/backend/ai/agent.py`
 
 ### Tests & Demo (30 points)
 - [x] Test file located at: `tests/test_functions.py`
-- [x] All tests pass (screenshot/evidence at: `docs/evidence/test-results.png`)
-- [ ] Demo video link: [ADD YOUR YOUTUBE/DRIVE LINK HERE]
-- [ ] Demo video shows: ✅ AI calling functions ✅ Multiple scenarios ✅ Error handling
+- [x] All tests pass 
+- [x?] Demo video: We have demo.py instead of the demo video which does the same thing
 
 ### Documentation & Code Quality (20 points)
-- [x] README updated with Week 6 section: [Link to your README#week-6]
+- [x] README updated with Week 6 section
 - [x] All functions have docstrings: ✅ Yes
 - [x] Type hints present: ✅ Yes
 - [x] Error handling implemented: ✅ Yes
@@ -42,43 +35,42 @@
 
 ### Evaluation & Safety Logs (10 points)
 Located in: `course-pack/labs/lab-6/`
-- [x] `evaluation_notes.md`: [Link to file]
-- [x] `safety_checklist.md`: [Link to file]
-- [x] `ai_use_log.md`: [Link to file]
-- [x] `capstone_link.md`: [Link to file]
+- [x] `evaluation_notes.md`
+- [x] `safety_checklist.md`
+- [x] `ai_use_log.md`
+- [x] `capstone_link.md`
 
 ---
 
 ## Part B: Week 7 - Design Review (5 points)
 
 ### Main Documents
-- [x] Design Review Document: `docs/design-review-week7.md` - [Link to file]
-- [x] Event Schemas: `docs/event-schemas.md` - [Link to file]
-- [x] Updated Architecture Diagram: `docs/architecture-week7.png` - [Link to file]
+- [x] Design Review Document: `docs/design-review-week7.md` 
+- [x] Event Schemas: `docs/event-schemas.md` 
+- [x] Updated Architecture Diagram: `docs/architecture-week7.png`
 
-### Design Review Sections Completed (check all 6)
-- [x] Section 1: Architecture Validation (1-2 pages)
-- [x] Section 2: Event Schema Documentation (2-3 pages)
-- [x] Section 3: Smoke Test Results (1-2 pages)
-- [x] Section 4: Performance Baseline (1 page)
-- [x] Section 5: Hypothesis Validation (1-2 pages)
-- [x] Section 6: Readiness Assessment (1 page)
+### Design Review Sections Completed 
+- [x] Section 1: Architecture Validation 
+- [x] Section 2: Event Schema Documentation 
+- [x] Section 3: Smoke Test Results 
+- [x] Section 4: Performance Baseline 
+- [x] Section 5: Hypothesis Validation 
+- [x] Section 6: Readiness Assessment 
 
 ### Evidence Folder
 - [x] Evidence folder exists at: `docs/evidence/`
-- [x] Contains: Logs, screenshots, performance data, validation results
+- [x] Contains: Logs, performance data, validation results
 
 ### README Update
-- [x] README links to design review: [Link to README section]
-- [x] README notes architectural changes (if any): ✅ No major changes from Week 2
+- [x] README links to design review
 
 ---
 
 ## Additional Notes for Grader
 
 **Strengths of our implementation:**
-- All 17 tests passing with 0 failures
-- Average latencies well under target (8-46ms)
+- All 16 tests passing with 0 failures
+- Average latencies well under target (0.05ms)
 - Comprehensive error handling with fallbacks
 - Clear separation of concerns (models, functions, agent)
 - Documented AI usage transparently
@@ -88,8 +80,3 @@ Located in: `course-pack/labs/lab-6/`
 - No database persistence yet (PostgreSQL integration planned for Week 8)
 - Frontend not yet implemented (React + Monaco planned for Week 9)
 
-**Next steps:**
-1. Integrate Judge0 API for real code execution
-2. Add PostgreSQL database for user profiles
-3. Build React frontend with code editor
-4. Deploy to production environment
