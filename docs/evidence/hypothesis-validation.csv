@@ -1,0 +1,21 @@
+solution_id,problem,ground_truth_pattern,detected_pattern,match,notes
+1,two-sum,edge_case_missing,edge_case_missing,true,No null check - detected correctly
+2,two-sum,edge_case_missing,edge_case_missing,true,No empty array check - detected correctly
+3,two-sum,edge_case_missing,edge_case_missing,true,Missing bounds validation - detected correctly
+4,two-sum,edge_case_missing,edge_case_missing,true,No input validation - detected correctly
+5,two-sum,edge_case_missing,none,false,Used 'if arr:' pattern instead of 'if not' - MISSED
+6,two-sum,suboptimal_time_complexity,suboptimal_time_complexity,true,Nested loops O(n²) - detected correctly
+7,two-sum,suboptimal_time_complexity,suboptimal_time_complexity,true,Triple nested loops O(n³) - detected correctly
+8,two-sum,suboptimal_time_complexity,suboptimal_time_complexity,true,Double for loop - detected correctly
+9,two-sum,suboptimal_time_complexity,suboptimal_time_complexity,true,While inside for loop - detected correctly
+10,two-sum,none,suboptimal_time_complexity,false,List comprehension flagged as nested loop - FALSE POSITIVE
+11,two-sum,wrong_data_structure,wrong_data_structure,true,Using list for O(1) lookup - detected correctly
+12,two-sum,wrong_data_structure,wrong_data_structure,true,Array iteration instead of hash map - detected correctly
+13,two-sum,wrong_data_structure,wrong_data_structure,true,Linear search in list - detected correctly
+14,two-sum,none,wrong_data_structure,false,List was appropriate for problem - FALSE POSITIVE
+15,two-sum,none,wrong_data_structure,false,Array indexing for direct access - FALSE POSITIVE
+16,two-sum,none,none,true,Clean solution - no false positives
+17,two-sum,none,none,true,Optimal hash map approach - no false positives
+18,two-sum,none,none,true,Good variable names and structure - no false positives
+19,two-sum,none,none,true,All edge cases handled - no false positives
+20,two-sum,none,none,true,O(n) time complexity - no false positives
