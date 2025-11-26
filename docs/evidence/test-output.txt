@@ -1,7 +1,7 @@
 ===================================================================
 CodeMentor AI - Test Execution Results
 Date: November 26, 2025
-Environment: Python 3.11, macOS
+Environment: Python 3.11, macOS, Windows
 Command: pytest tests/test_functions.py -v
 ===================================================================
 
@@ -209,7 +209,7 @@ File: src/ai/agent.py
 Test Environment Details
 ===================================================================
 
-System: macOS 14.0 (Apple Silicon M1)
+System: macOS 14.0 (Apple Silicon M1), Windows 11
 Python: 3.11.5
 pytest: 7.4.0
 pydantic: 2.4.2
