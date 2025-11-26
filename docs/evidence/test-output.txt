@@ -16,6 +16,11 @@ platform win32 -- Python 3.13.7, pytest-9.0.0, pluggy-1.6.0 -- C:\Users\User\Des
 cachedir: .pytest_cache
 rootdir: C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\tests
 collected 16 items                                                                                                                                                                                
+====================================================================================== test session starts =======================================================================================
+platform win32 -- Python 3.13.7, pytest-9.0.0, pluggy-1.6.0 -- C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\tests
+collected 16 items                                                                                                                                                                                
 
 test_functions.py::test_analyze_code_basic PASSED                                                                                                                                           [  6%] 
 test_functions.py::test_analyze_code_edge_case_detection PASSED                                                                                                                             [ 12%] 
@@ -33,6 +38,10 @@ test_functions.py::test_track_progress_next_focus PASSED                        
 test_functions.py::test_track_progress_error_handling PASSED                                                                                                                                [ 87%] 
 test_functions.py::test_full_workflow PASSED                                                                                                                                                [ 93%] 
 test_functions.py::test_latency_all_functions PASSED                                                                                                                                        [100%] 
+
+======================================================================================= 16 passed in 0.05s ======================================================================================= 
+(.venv) PS C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\tests>
+test_functions.py
 
 ======================================================================================= 16 passed in 0.05s ======================================================================================= 
 (.venv) PS C:\Users\User\Desktop\cs-ai-2025-team-ai4ce\tests>
