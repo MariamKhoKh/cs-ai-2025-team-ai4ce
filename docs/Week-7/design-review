@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-CodeMentor AI is an intelligent technical interview preparation platform that analyzes user code submissions, detects weakness patterns, and provides personalized problem recommendations. This design review validates our Week 6 implementation and assesses readiness for Week 8 agent orchestration.
+CodeMentor AI is an intelligent technical interview preparation platform that analyzes user code submissions, detects weakness patterns, and provides personalized problem recommendations.
 
 **Current Status:** Core functions implemented and tested  
 **Test Results:** 17/17 tests passing  
@@ -19,7 +19,6 @@ CodeMentor AI is an intelligent technical interview preparation platform that an
 ## Section 1: Architecture Validation
 
 ### 1.1 Updated Architecture Diagram
-
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         USER INTERFACE                          │
@@ -61,37 +60,27 @@ CodeMentor AI is an intelligent technical interview preparation platform that an
 ### 1.2 Component Descriptions
 
 **Gemini AI Agent (`src/backend/ai/agent.py`)**
-- **Technology:** Google gemini-2.5-flash
-- **Purpose:** Orchestrates function calling, maintains conversation context
-- **Key Methods:** 
-  - `start_conversation()` - Initializes chat session
-  - `send_message()` - Handles user input and function calling loop
-  - `_execute_function_call()` - Maps function names to implementations
-- **Error Handling:** Try-catch blocks with traceback logging
+- Technology: Google gemini-2.5-flash
+- Purpose: Orchestrates function calling, maintains conversation context
+- Key Methods: `start_conversation()`, `send_message()`, `_execute_function_call()`
+- Error Handling: Try-catch blocks with traceback logging
 
 **Function Layer (`src/backend/functions/tools.py`)**
-- **Technology:** Python 3.11 with type hints
-- **Purpose:** Core business logic for code analysis, recommendations, progress tracking
-- **Data Sources:** Mock dictionaries (MOCK_PROBLEMS, USER_WEAKNESS_PROFILES)
-- **Key Features:**
-  - Pattern detection using heuristics (edge cases, complexity, data structures)
-  - Test simulation via `_run_mock_tests()`
-  - Complexity estimation via `_estimate_complexity()`
-  - Weakness score updates with ±5/±3 point adjustments
+- Technology: Python 3.11 with type hints
+- Purpose: Core business logic for code analysis, recommendations, progress tracking
+- Data Sources: Mock dictionaries (MOCK_PROBLEMS, USER_WEAKNESS_PROFILES)
+- Key Features: Pattern detection, test simulation, complexity estimation, weakness scoring
 
 **Validation Layer (`src/backend/models/function_models.py`)**
-- **Technology:** Pydantic v2
-- **Purpose:** Enforce data contracts, provide type safety
-- **Models:** 8 total (3 requests, 3 responses, 2 nested models)
-- **Validation:** Literal types for enums, Field constraints, type checking
+- Technology: Pydantic v2
+- Purpose: Enforce data contracts, provide type safety
+- Models: 8 total (3 requests, 3 responses, 2 nested models)
 
 **Data Layer (Current: In-Memory)**
-- **Current:** Python dictionaries in `tools.py`
-- **Limitations:** No persistence, resets on restart, not scalable
-- **Future:** PostgreSQL with SQLAlchemy ORM (Week 8)
+- Current: Python dictionaries in `tools.py`
+- Future: PostgreSQL with SQLAlchemy ORM (Week 8)
 
 ### 1.3 Data Flow Diagram
-
 ```
 User Query
     │
@@ -128,20 +117,11 @@ User Query
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 5. Return: CodeAnalysisResponse (Pydantic validated)       │
-│    {                                                        │
-│      "submission_id": "sub_abc123",                         │
-│      "all_tests_passed": false,                             │
-│      "detected_patterns": [...],                            │
-│      "ai_feedback": "...",                                  │
-│      "time_complexity": "O(n²)",                            │
-│      ...                                                    │
-│    }                                                        │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 6. Gemini processes response → Generates natural language  │
-│    "I analyzed your code. Here's what I found..."          │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
@@ -152,30 +132,24 @@ User Query
 
 ### 1.4 Changes from Week 2 Proposal
 
-**No Major Architectural Changes**
-
-Our Week 6 implementation closely follows the Week 2 proposal with minor refinements:
-
 **Refinements Made:**
-1. **Model Selection:** Initially proposed GPT-4, implemented with Gemini 1.5 Flash for better cost/performance ratio
-2. **Pattern Categories:** Expanded from 8 to 13 error pattern types based on research
-3. **Complexity Algorithm:** Simplified to heuristic-based (counting loops) instead of AST parsing for Week 6
-4. **Mastery Scoring:** Defined specific ±5/±3 point adjustment rules
+1. Model Selection: GPT-4 → Gemini 1.5 Flash (cost/performance)
+2. Pattern Categories: Expanded from 8 to 13 types
+3. Complexity Algorithm: Simplified to heuristic-based
+4. Mastery Scoring: Defined ±5/±3 point adjustment rules
 
 **Stayed Consistent:**
-- Three-function architecture (analyze, recommend, track)
+- Three-function architecture
 - Pydantic validation layer
 - Mock data approach for Week 6
 - Planned Judge0 integration timeline
-- PostgreSQL database architecture (still planned)
+- PostgreSQL database architecture
 
 ---
 
 ## Section 2: Event Schema Documentation
 
 ### 2.1 Critical Event Types
-
-Our system has 5 critical event types that drive all functionality:
 
 1. **Code Submission Event** - User submits code for analysis
 2. **Code Analysis Response Event** - System returns test results and feedback
@@ -185,13 +159,13 @@ Our system has 5 critical event types that drive all functionality:
 
 ### 2.2 Schema Summary
 
-| Event Type | Direction | Required Fields | Optional Fields | Validation Rules |
-|------------|-----------|----------------|-----------------|------------------|
-| Code Submission | User → System | problem_id, user_code, language | user_id | language ∈ {python, javascript} |
-| Analysis Response | System → User | submission_id, test_results, all_tests_passed | detected_patterns | test_results must be non-empty |
-| Progress Update | System → Data | user_id, detected_patterns, solved_correctly | time_taken | mastery_score ∈ [0, 100] |
-| Recommendation Request | User → System | user_id | difficulty_level | difficulty ∈ {easy, medium, hard} |
-| Error | System → User | error_type, message, timestamp | stack_trace | error_type must be valid enum |
+| Event Type | Direction | Required Fields | Validation Rules |
+|------------|-----------|----------------|------------------|
+| Code Submission | User → System | problem_id, user_code, language | language ∈ {python, javascript} |
+| Analysis Response | System → User | submission_id, test_results, all_tests_passed | test_results non-empty |
+| Progress Update | System → Data | user_id, detected_patterns, solved_correctly | mastery_score ∈ [0, 100] |
+| Recommendation Request | User → System | user_id | difficulty ∈ {easy, medium, hard} |
+| Error | System → User | error_type, message, timestamp | error_type valid enum |
 
 ### 2.3 Example Instances
 
@@ -236,16 +210,6 @@ Our system has 5 critical event types that drive all functionality:
 }
 ```
 
-### 2.4 Schema Completeness Checklist
-
-- [x] All user-facing inputs have schemas
-- [x] All system outputs have schemas
-- [x] All inter-component messages have schemas
-- [x] Error responses have schemas
-- [x] All schemas have example instances
-- [x] All schemas document validation rules
-- [x] Field descriptions are clear and complete
-
 ---
 
 ## Section 3: Smoke Test Results
@@ -255,26 +219,25 @@ Our system has 5 critical event types that drive all functionality:
 **Date:** November 26, 2025  
 **Environment:** Local development (Python 3.11, macOS)  
 **Test Command:** `pytest tests/test_functions.py -v`  
-**Result:**  17/17 tests passed (0 failed)
+**Result:** 17/17 tests passed (0 failed)
 
 ### 3.2 Smoke Test Checklist
 
 | Test Item | Status | Evidence | Notes |
 |-----------|--------|----------|-------|
-| **End-to-End Flow** | ✅ PASS | `test_full_workflow` passed | All 3 functions chain correctly |
-| **Function 1: analyze_code_submission** | ✅ PASS | 5/5 tests passed | Handles valid/invalid inputs |
-| **Function 2: get_recommended_problem** | ✅ PASS | 4/4 tests passed | Targets weaknesses correctly |
-| **Function 3: track_user_progress** | ✅ PASS | 5/5 tests passed | Updates mastery scores |
-| **Pydantic Validation** | ✅ PASS | All models validate | Type errors caught |
-| **Error Handling** | ✅ PASS | Invalid inputs handled | Graceful fallbacks |
-| **Performance** | ✅ PASS | `test_latency_all_functions` | All <2s, most <50ms |
-| **Gemini Integration** | ✅ PASS | Manual testing | Function calling works |
-| **Mock Data Integrity** | ✅ PASS | All lookups succeed | No missing keys |
-| **JSON Schema Validity** | ✅ PASS | FunctionDeclarations valid | Gemini accepts schemas |
+| End-to-End Flow | ✅ PASS | `test_full_workflow` passed | All 3 functions chain correctly |
+| Function 1: analyze_code_submission | ✅ PASS | 5/5 tests passed | Handles valid/invalid inputs |
+| Function 2: get_recommended_problem | ✅ PASS | 4/4 tests passed | Targets weaknesses correctly |
+| Function 3: track_user_progress | ✅ PASS | 5/5 tests passed | Updates mastery scores |
+| Pydantic Validation | ✅ PASS | All models validate | Type errors caught |
+| Error Handling | ✅ PASS | Invalid inputs handled | Graceful fallbacks |
+| Performance | ✅ PASS | `test_latency_all_functions` | All <2s, most <50ms |
+| Gemini Integration | ✅ PASS | Manual testing | Function calling works |
+| Mock Data Integrity | ✅ PASS | All lookups succeed | No missing keys |
 
 ### 3.3 Evidence
 
-**Test Output Screenshot:**
+**Test Output:**
 ```
 tests/test_functions.py::test_analyze_code_basic PASSED                    [  5%]
 tests/test_functions.py::test_analyze_code_edge_case_detection PASSED     [ 11%]
@@ -307,18 +270,10 @@ track_user_progress: 7.89ms
 
 **No critical failures.** All smoke tests passed.
 
-**Minor Issues Identified:**
-1. **Mock test logic is simplistic** - Only checks for basic patterns like "if not"
-   - **Mitigation:** Week 7 priority is Judge0 integration for real execution
-   - **Timeline:** Complete by end of Week 7
-
-2. **No database persistence** - All data lost on restart
-   - **Mitigation:** PostgreSQL integration planned for Week 8
-   - **Timeline:** Schema design Week 8, implementation Week 9
-
-3. **Pattern detection is rule-based** - May miss complex patterns
-   - **Mitigation:** Consider ML classifier in future (post-Week 12)
-   - **Timeline:** Research phase Week 10-11
+**Minor Issues:**
+1. Mock test logic simplistic - Judge0 integration Week 7
+2. No database persistence - PostgreSQL Week 8
+3. Pattern detection rule-based - ML classifier post-Week 12
 
 ---
 
@@ -332,59 +287,40 @@ track_user_progress: 7.89ms
 - Python 3.11, macOS M1, 16GB RAM
 - Local execution (no network latency)
 
-**Test Scenarios:**
-- Valid inputs (typical usage)
-- Invalid inputs (error handling)
-- Edge cases (boundary conditions)
-
 ### 4.2 Latency Results
 
 | Metric | analyze_code | get_recommended | track_progress | Target | Status |
 |--------|--------------|-----------------|----------------|--------|--------|
-| **p50 (median)** | 45ms | 12ms | 8ms | <500ms | ✅ PASS |
-| **p95** | 51ms | 14ms | 9ms | <1000ms | ✅ PASS |
-| **p99** | 55ms | 15ms | 10ms | <2000ms | ✅ PASS |
-| **Average** | 46ms | 12ms | 8ms | <500ms | ✅ PASS |
-
-**Interpretation:** All functions execute in <100ms locally. Well under targets.
+| p50 (median) | 45ms | 12ms | 8ms | <500ms | ✅ PASS |
+| p95 | 51ms | 14ms | 9ms | <1000ms | ✅ PASS |
+| p99 | 55ms | 15ms | 10ms | <2000ms | ✅ PASS |
+| Average | 46ms | 12ms | 8ms | <500ms | ✅ PASS |
 
 ### 4.3 Token Usage Analysis
 
 **Gemini API Usage (per request):**
-- Input tokens: ~300-500 (function declarations + user message)
-- Output tokens: ~150-300 (natural language response)
+- Input tokens: ~300-500
+- Output tokens: ~150-300
 - Total tokens: ~450-800 per request
 
-**Cost Calculation (Gemini 1.5 Flash pricing):**
-- Input: $0.00001875 per 1K tokens → $0.000009375 per request
-- Output: $0.000075 per 1K tokens → $0.0000225 per request
+**Cost Calculation (Gemini 1.5 Flash):**
+- Input: $0.00001875 per 1K tokens
+- Output: $0.000075 per 1K tokens
 - **Total per request: ~$0.000032**
 
 **Projected Costs:**
-- 100 users/day × 10 requests = 1,000 requests/day → **$0.032/day = $0.96/month**
-- 1,000 users/day × 10 requests = 10,000 requests/day → **$0.32/day = $9.60/month**
-
-**Cost is negligible** - function execution dominates (free for mock data).
+- 100 users/day × 10 requests = $0.032/day = **$0.96/month**
+- 1,000 users/day × 10 requests = $0.32/day = **$9.60/month**
 
 ### 4.4 Bottleneck Analysis
 
-**Current Bottleneck:** Pattern detection logic in `_detect_error_patterns()`
-- String operations ("if not" in user_code, counting "for" loops)
-- Not a real bottleneck at 45ms, but could optimize
+**Current Bottleneck:** Pattern detection logic (45ms) - not critical
 
-**Future Bottleneck (Week 7+):** Judge0 API calls
-- Network latency: 500-2000ms per execution
-- **Mitigation Plan:**
-  1. Implement caching for identical submissions
-  2. Add timeout limits (5s max)
-  3. Batch test cases when possible
-  4. Consider self-hosted Judge0 for production
+**Future Bottleneck (Week 7+):** Judge0 API calls (500-2000ms)
+- **Mitigation:** Caching, timeout limits (5s max), consider self-hosted
 
 **Database Queries (Week 8+):** Potential bottleneck
-- **Mitigation Plan:**
-  1. Index on user_id, problem_id
-  2. Use connection pooling
-  3. Cache user profiles in Redis
+- **Mitigation:** Indexing on user_id/problem_id, connection pooling, Redis cache
 
 ---
 
@@ -392,22 +328,15 @@ track_user_progress: 7.89ms
 
 ### 5.1 Hypothesis Statement
 
-**Hypothesis:** Rule-based pattern detection (checking for "if not", counting loops, etc.) can accurately identify at least 3 out of 5 common coding weaknesses in beginner solutions.
-
-**Why This Matters:** If rule-based detection is sufficient, we can ship Week 6 functionality without ML. If not, we need ML classifier (adds 2-3 weeks).
+**Hypothesis:** Rule-based pattern detection can accurately identify at least 3 out of 5 common coding weaknesses in beginner solutions.
 
 ### 5.2 Methodology
 
-**Test Set:** 20 sample Python solutions for "Two Sum" problem
-- 5 solutions with edge case issues (no null checks)
-- 5 solutions with nested loops (O(n²) complexity)
-- 5 solutions using list when dict would be better
-- 5 clean solutions (no issues)
-
-**Evaluation:**
-1. Run each solution through `analyze_code_submission()`
-2. Manually label ground truth for each pattern
-3. Calculate precision, recall, F1 for each pattern type
+**Test Set:** 20 sample Python solutions for "Two Sum"
+- 5 with edge case issues
+- 5 with nested loops (O(n²))
+- 5 using list instead of dict
+- 5 clean solutions
 
 ### 5.3 Results
 
@@ -418,58 +347,28 @@ track_user_progress: 7.89ms
 | wrong_data_structure | 60% (3/5) | 100% (3/3) | 75.0% | 5 |
 | **Overall** | **80%** | **93%** | **86%** | **15** |
 
-**False Positives:**
-- 1 solution flagged "wrong_data_structure" but used list appropriately
-- 1 solution flagged "suboptimal_time_complexity" but was optimal for small n
-
-**False Negatives:**
-- 1 solution missed edge case (used "if arr:" instead of "if not arr:")
-
-**Raw Data:**
-```
-Solution 1: No null check detected ✅ (TP)
-Solution 2: No null check detected ✅ (TP)
-Solution 3: No null check detected ✅ (TP)
-Solution 4: No null check detected ✅ (TP)
-Solution 5: No null check NOT detected ❌ (FN - used "if arr:" pattern)
-
-Solution 6: Nested loops detected ✅ (TP)
-Solution 7: Nested loops detected ✅ (TP)
-Solution 8: Nested loops detected ✅ (TP)
-Solution 9: Nested loops detected ✅ (TP)
-Solution 10: Nested loops flagged incorrectly ❌ (FP - was list comprehension)
-
-Solution 11: Wrong data structure detected ✅ (TP)
-Solution 12: Wrong data structure detected ✅ (TP)
-Solution 13: Wrong data structure detected ✅ (TP)
-Solution 14: Wrong data structure flagged incorrectly ❌ (FP - list was appropriate)
-Solution 15: Wrong data structure flagged incorrectly ❌ (FP - used array indexing)
-
-Solution 16-20: Clean solutions, no false positives 
-```
+**False Positives:** 3 solutions incorrectly flagged
+**False Negatives:** 1 solution missed (used "if arr:" pattern)
 
 ### 5.4 Interpretation
 
-**Hypothesis Confirmed (with caveats):**
-- 86% F1 score exceeds our 60% minimum bar
-- Rule-based detection is "good enough" for Week 6
-- Pattern detection works well for obvious cases
+**Hypothesis Confirmed:** 86% F1 score exceeds 60% minimum bar.
 
-**Limitations Found:**
-1. **Edge case detection too rigid** - Only checks for "if not", misses "if arr:"
-2. **Data structure heuristic crude** - Flags any list usage as potential issue
-3. **No context awareness** - Can't tell if nested loop is actually needed
+**Limitations:**
+1. Edge case detection too rigid
+2. Data structure heuristic crude
+3. No context awareness
 
-**Implications for Design:**
-1. ✅ **Keep rule-based approach for Week 6-9** (sufficient for MVP)
-2. ⚠️ **Improve heuristics** - Add more pattern variations (Week 8)
-3. 📅 **Plan ML classifier** - Research phase Week 10-11, implementation Week 12+
+**Implications:**
+- ✅ Keep rule-based approach for Week 6-9
+- ⚠️ Improve heuristics Week 8
+- 📅 Plan ML classifier Week 10-11
 
 **Action Items:**
-- [ ] Expand edge case regex to include "if arr:", "if len(arr) == 0", etc.
-- [ ] Improve data structure detection to check problem requirements
-- [ ] Add AST parsing for more accurate complexity analysis
-- [ ] Collect 500+ labeled examples for future ML model training
+- [ ] Expand edge case regex patterns
+- [ ] Improve data structure detection
+- [ ] Add AST parsing for complexity
+- [ ] Collect 500+ labeled examples for ML
 
 ---
 
@@ -477,146 +376,90 @@ Solution 16-20: Clean solutions, no false positives
 
 ### 6.1 Can System Handle 5-20x More API Calls?
 
-**Current State:**
-- 25 test requests → 46ms average latency
-- Gemini API has no rate limits for our usage tier
-- Mock data scales trivially (in-memory lookups)
-
-**Analysis:**
 | Scenario | Requests/Day | Expected Latency | Bottleneck | Status |
 |----------|--------------|------------------|------------|--------|
-| Current (testing) | ~50 | 46ms | None | ✅ |
+| Current | ~50 | 46ms | None | ✅ |
 | 5x scale | 250 | ~50ms | None | ✅ |
 | 20x scale | 1,000 | ~60ms | Potential Gemini queue | ⚠️ |
 | 100x scale | 5,000 | ~100ms+ | Gemini rate limits | ❌ |
 
-**Verdict:**  **Yes, system can handle 5-20x scale** for Week 8 agent loops.
-
-**Mitigation for 100x:**
-- Implement request queuing
-- Add Redis caching for repeated queries
-- Consider Gemini Batch API for non-real-time requests
+**Verdict:** **Yes, system can handle 5-20x scale** for Week 8.
 
 ### 6.2 Are Error Handlers Robust for Agent Loops?
 
-**Current Error Handling:**
--  All functions have try-catch blocks
--  Pydantic validates all inputs
--  Invalid problem IDs return safe fallbacks
--  Missing users create default profiles
-
-**Agent Loop Concerns:**
 | Risk | Current Mitigation | Robustness | Action Needed |
 |------|-------------------|------------|---------------|
-| Infinite retry loops | None | ❌ | Add max retry counter (Week 8) |
-| Gemini API failures | Try-catch returns error message | ⚠️ | Add exponential backoff |
+| Infinite retry loops | None | ❌ | Add max retry counter |
+| Gemini API failures | Try-catch | ⚠️ | Add exponential backoff |
 | Function result parsing | Pydantic validates | ✅ | None |
 | Invalid function args | Pydantic validates | ✅ | None |
 
-**Verdict:**  **Mostly ready, needs retry logic improvements for Week 8.**
-
-**Action Items:**
-- [ ] Add `max_retries=3` parameter to agent
-- [ ] Implement exponential backoff for API calls
-- [ ] Add circuit breaker pattern for repeated failures
-- [ ] Log all errors to file for debugging
+**Verdict:** **Mostly ready, needs retry logic for Week 8.**
 
 ### 6.3 Is Cost Model Sustainable at Scale?
 
-**Current Costs (Gemini 1.5 Flash):**
-- $0.000032 per request (see Section 4.3)
-- 1,000 users × 10 requests/day = $0.32/day = **$9.60/month**
-
 **With Judge0 (Week 7+):**
 - Judge0 Basic: $0.004 per execution
-- 1,000 users × 10 requests/day × 3 test cases = 30,000 executions/day
-- **$120/day = $3,600/month** 
+- 1,000 users × 10 requests/day × 3 tests = 30,000 executions/day
+- **$120/day = $3,600/month**
 
-**Analysis:**
 | Usage Tier | Users/Day | Gemini Cost | Judge0 Cost | Total/Month | Sustainable? |
 |------------|-----------|-------------|-------------|-------------|--------------|
-| Beta (current) | 10 | $0.10 | $0 (mock) | $3 |  Yes |
-| Small (target) | 100 | $1.00 | $360 | $390 |  Depends on revenue |
-| Medium | 1,000 | $10.00 | $3,600 | $3,610 |  No (need optimization) |
+| Beta | 10 | $0.10 | $0 (mock) | $3 | Yes |
+| Small | 100 | $1.00 | $360 | $390 | Depends on revenue |
+| Medium | 1,000 | $10.00 | $3,600 | $3,610 | No (need optimization) |
 
-**Verdict:**  **Current model sustainable for beta, needs optimization for growth.**
+**Verdict:** **Sustainable for beta, needs optimization for growth.**
 
 **Cost Optimization Plan:**
-1. **Tier 1 (Week 7):** Cache identical code submissions → 30% reduction
-2. **Tier 2 (Week 8):** Self-host Judge0 on AWS EC2 → $50/month fixed cost
-3. **Tier 3 (Week 10):** Implement test case batching → 50% reduction
-4. **Tier 4 (Future):** Freemium model - free tier uses mock, paid tier uses real execution
+1. Cache identical submissions → 30% reduction
+2. Self-host Judge0 → $50/month fixed
+3. Test case batching → 50% reduction
+4. Freemium model - free tier uses mock
 
 ### 6.4 What Must Be Fixed Before Week 8?
 
 **Critical Blockers (MUST FIX):**
-1.  **No retry logic for Gemini API failures**
-   - Impact: Agent loops will crash on transient errors
-   - Fix: Add max_retries=3 with exponential backoff
-   - Owner: [Assign team member]
-   - Deadline: Before Week 8 lab (Dec 3)
-
-2.  **No timeout handling for long-running functions**
-   - Impact: Agent could hang indefinitely
-   - Fix: Add timeout decorator (5s max per function)
-   - Owner: [Assign team member]
-   - Deadline: Before Week 8 lab
+1. ⚠️ **No retry logic for Gemini API failures** - Add max_retries=3 with exponential backoff
+2. ⚠️ **No timeout handling** - Add timeout decorator (5s max per function)
 
 **High Priority (SHOULD FIX):**
-3.  **Judge0 integration not started**
-   - Impact: Can't test real code execution
-   - Fix: Complete Judge0 API integration
-   - Owner: [Assign team member]
-   - Deadline: End of Week 7 (Nov 27)
-
-4.  **No database persistence**
-   - Impact: All data lost on restart
-   - Fix: PostgreSQL schema + SQLAlchemy models
-   - Owner: [Assign team member]
-   - Deadline: Week 8 (Dec 1-7)
+3. 📅 **Judge0 integration not started** - Complete by end of Week 7
+4. 📅 **No database persistence** - PostgreSQL schema Week 8
 
 **Nice to Have (CAN WAIT):**
-5.  **Pattern detection heuristics are basic**
-   - Impact: Some false positives/negatives
-   - Fix: Improve regex patterns, add more checks
-   - Timeline: Incremental improvements Week 9-11
-
-6.  **No ML classifier for patterns**
-   - Impact: Limited accuracy on complex cases
-   - Fix: Train classifier on 500+ examples
-   - Timeline: Research Week 10-11, implement Week 12+
+5. Pattern detection improvements - Incremental Week 9-11
+6. ML classifier - Research Week 10-11, implement Week 12+
 
 ### 6.5 Readiness Score
 
 | Category | Score | Rationale |
 |----------|-------|-----------|
-| **Core Functionality** | 9/10 | All 3 functions working, tested |
-| **Error Handling** | 7/10 | Good validation, needs retry logic |
-| **Performance** | 9/10 | Excellent latency, cost sustainable for beta |
-| **Scalability** | 7/10 | Can handle 20x, needs work for 100x |
-| **Data Integrity** | 8/10 | Schemas solid, needs DB persistence |
-| **Documentation** | 9/10 | Well documented, clear architecture |
-| **Testing** | 9/10 | 17/17 tests pass, good coverage |
-| ****Overall** | **8.3/10** | **Ready for Week 8 with minor fixes** |
+| Core Functionality | 9/10 | All 3 functions working, tested |
+| Error Handling | 7/10 | Good validation, needs retry logic |
+| Performance | 9/10 | Excellent latency, cost sustainable |
+| Scalability | 7/10 | Can handle 20x, needs work for 100x |
+| Data Integrity | 8/10 | Schemas solid, needs DB |
+| Documentation | 9/10 | Well documented, clear architecture |
+| Testing | 9/10 | 17/17 tests pass, good coverage |
+| **Overall** | **8.3/10** | **Ready for Week 8 with minor fixes** |
 
 ---
 
 ## Conclusion
 
-CodeMentor AI's Week 6 implementation successfully validates our architecture. All core functions work reliably with excellent performance (8-46ms). Testing is comprehensive (17/17 pass). Event schemas are well-defined.
+CodeMentor AI's Week 6 implementation successfully validates architecture. All core functions work reliably (8-46ms). Testing comprehensive (17/17 pass). Event schemas well-defined.
 
 **Key Strengths:**
-- Clean separation of concerns (agent, functions, models, data)
-- Robust Pydantic validation prevents bad data
+- Clean separation of concerns
+- Robust Pydantic validation
 - Performance well under targets
 - Cost model sustainable for beta
 
 **Critical Next Steps:**
 1. Add retry logic and timeouts (before Week 8)
-2. Integrate Judge0 API (Week 7 priority)
+2. Integrate Judge0 API (Week 7)
 3. Build PostgreSQL persistence (Week 8)
 4. Deploy frontend (Week 9)
 
-**Readiness Verdict:**  **READY for Week 8 agent orchestration** with planned fixes.
-
----
+**Readiness Verdict:** **READY for Week 8 agent orchestration** with planned fixes.
