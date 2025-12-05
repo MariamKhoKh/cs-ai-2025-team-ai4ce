@@ -1,6 +1,6 @@
 # Architecture Decision: Agent vs Direct Function Calling
 
-## Decision: **Direct Function Calling (Recommended)**
+## Decision: **Direct Function Calling**
 
 ## Justification
 
