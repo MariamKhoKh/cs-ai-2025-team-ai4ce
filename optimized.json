@@ -1,0 +1,421 @@
+{
+  "summary": {
+    "benchmark_name": "Optimized (Caching + Token Reduction + Routing)",
+    "measurement_date": "2025-12-09T20:36:23.293918",
+    "total_queries": 50,
+    "successful_queries": 50,
+    "failed_queries": 0,
+    "total_cost": 0.0,
+    "average_cost": 0.0,
+    "median_cost": 0.0,
+    "average_latency": 0.13,
+    "median_latency": 0.12,
+    "min_latency": 0.09,
+    "max_latency": 0.22,
+    "p95_latency": 0.18,
+    "p99_latency": 0.22,
+    "latency_std_dev": 0.03
+  },
+  "detailed_results": [
+    {
+      "query_id": 1,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.13,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 2,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.22,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 3,
+      "query": "Recommend me an easy problem",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 4,
+      "query": "What should I work on to improve?",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1811
+    },
+    {
+      "query_id": 5,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 6,
+      "query": "Analyze this code:\ndef two_sum(nums, target):\n    ...",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 7,
+      "query": "Track my progress on two-sum problem",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 8,
+      "query": "Suggest a medium difficulty problem",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 9,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 10,
+      "query": "Recommend something for arrays",
+      "latency_seconds": 0.17,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 11,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 12,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 13,
+      "query": "Recommend me an easy problem",
+      "latency_seconds": 0.12,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 14,
+      "query": "What should I work on to improve?",
+      "latency_seconds": 0.15,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 15,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.12,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 16,
+      "query": "Analyze this code:\ndef two_sum(nums, target):\n    ...",
+      "latency_seconds": 0.15,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1811
+    },
+    {
+      "query_id": 17,
+      "query": "Track my progress on two-sum problem",
+      "latency_seconds": 0.12,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 18,
+      "query": "Suggest a medium difficulty problem",
+      "latency_seconds": 0.15,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 19,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.12,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 20,
+      "query": "Recommend something for arrays",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 21,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 22,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.17,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 23,
+      "query": "Recommend me an easy problem",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 24,
+      "query": "What should I work on to improve?",
+      "latency_seconds": 0.17,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 25,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.19,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 26,
+      "query": "Analyze this code:\ndef two_sum(nums, target):\n    ...",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 27,
+      "query": "Track my progress on two-sum problem",
+      "latency_seconds": 0.18,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 28,
+      "query": "Suggest a medium difficulty problem",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 29,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.15,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 30,
+      "query": "Recommend something for arrays",
+      "latency_seconds": 0.12,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 31,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 32,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 33,
+      "query": "Recommend me an easy problem",
+      "latency_seconds": 0.17,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1811
+    },
+    {
+      "query_id": 34,
+      "query": "What should I work on to improve?",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1811
+    },
+    {
+      "query_id": 35,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 36,
+      "query": "Analyze this code:\ndef two_sum(nums, target):\n    ...",
+      "latency_seconds": 0.09,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 37,
+      "query": "Track my progress on two-sum problem",
+      "latency_seconds": 0.18,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 38,
+      "query": "Suggest a medium difficulty problem",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 39,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.16,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 40,
+      "query": "Recommend something for arrays",
+      "latency_seconds": 0.14,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1811
+    },
+    {
+      "query_id": 41,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 42,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 43,
+      "query": "Recommend me an easy problem",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 44,
+      "query": "What should I work on to improve?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 45,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 46,
+      "query": "Analyze this code:\ndef two_sum(nums, target):\n    ...",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 47,
+      "query": "Track my progress on two-sum problem",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 48,
+      "query": "Suggest a medium difficulty problem",
+      "latency_seconds": 0.11,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 49,
+      "query": "What problem should I practice next?",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    },
+    {
+      "query_id": 50,
+      "query": "Recommend something for arrays",
+      "latency_seconds": 0.1,
+      "cost": 0.0,
+      "success": true,
+      "response_length": 1812
+    }
+  ]
+}
