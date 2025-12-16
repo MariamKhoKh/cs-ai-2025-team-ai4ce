@@ -1,0 +1,1 @@
+Stores the baseline performance metrics (accuracy, keyword match, quality score etc.) for the golden set. Used to track regressions over time.
