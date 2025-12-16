@@ -2,8 +2,9 @@ import os
 import time
 import json
 import logging
+import uuid
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from functools import wraps
 import google.generativeai as genai
 from google.generativeai.types import FunctionDeclaration, Tool
@@ -14,15 +15,22 @@ from pydantic import BaseModel, Field, validator
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# ==================== FEATURE 1: AUDIT LOGGING ====================
+# ==================== ENHANCED TELEMETRY & LOGGING ====================
 
 os.makedirs("logs", exist_ok=True)
+
+# Configure structured JSON logging
 logging.basicConfig(
-    filename='logs/agent_audit.log',
     level=logging.INFO,
-    format='%(message)s'
+    format='%(message)s',
+    handlers=[
+        logging.FileHandler('logs/agent_audit.log'),
+        logging.FileHandler('logs/telemetry.log')  # Separate telemetry log
+    ]
 )
+
 logger = logging.getLogger(__name__)
+telemetry_logger = logging.getLogger('telemetry')
 
 def log_audit(event_type: str, details: Dict[str, Any]):
     """Log all agent actions for audit trail"""
@@ -33,8 +41,39 @@ def log_audit(event_type: str, details: Dict[str, Any]):
     }
     logger.info(json.dumps(log_entry))
 
+def log_telemetry(
+    request_id: str,
+    user_id: str,
+    query_type: str,
+    latency_ms: float,
+    success: bool,
+    cost_usd: float = 0.0,
+    model_used: str = "gemini-2.0-flash-exp",
+    cache_hit: bool = False,
+    error_type: Optional[str] = None,
+    **kwargs
+):
+    """
+    Log detailed telemetry for every request.
+    This is what Lab 10 requires for production monitoring.
+    """
+    telemetry_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "request_id": request_id,
+        "user_id": user_id,
+        "query_type": query_type,
+        "latency_ms": round(latency_ms, 2),
+        "success": success,
+        "cost_usd": round(cost_usd, 6),
+        "model_used": model_used,
+        "cache_hit": cache_hit,
+        "error_type": error_type,
+        **kwargs  # Additional fields like response_length, function_called, etc.
+    }
+    telemetry_logger.info(json.dumps(telemetry_entry))
 
-# ==================== FEATURE 2: INPUT VALIDATION ====================
+
+# ==================== INPUT VALIDATION ====================
 
 class AnalyzeCodeInput(BaseModel):
     problem_id: str = Field(..., min_length=1, max_length=100)
@@ -49,7 +88,7 @@ class AnalyzeCodeInput(BaseModel):
         return v.strip()
 
 
-# ==================== FEATURE 3: CIRCUIT BREAKER ====================
+# ==================== CIRCUIT BREAKER ====================
 
 class CircuitBreaker:
     """Circuit breaker per tool to prevent cascading failures"""
@@ -95,7 +134,7 @@ class CircuitBreaker:
             raise e
 
 
-# ==================== FEATURE 4: AUTHORIZATION ====================
+# ==================== AUTHORIZATION ====================
 
 class Permission:
     READ = "read"
@@ -137,7 +176,7 @@ def check_authorization(user_id: str, tool_name: str) -> bool:
     return authorized
 
 
-# ==================== FEATURE 5 & 6: RETRY + TIMEOUTS ====================
+# ==================== RETRY + TIMEOUTS ====================
 
 @retry(
     stop=stop_after_attempt(3),
@@ -167,7 +206,7 @@ def call_with_retry(func, *args, timeout_seconds=5, **kwargs):
         return func(*args, **kwargs)
 
 
-# ==================== FEATURE 7: COST TRACKING ====================
+# ==================== COST TRACKING ====================
 
 class CostTracker:
     """Track API costs and enforce limits"""
@@ -200,10 +239,10 @@ class CostTracker:
         }
 
 
-# ==================== FEATURE 8: ERROR HANDLING ====================
+# ==================== PRODUCTION AGENT WITH FULL TELEMETRY ====================
 
 class ProductionAgent:
-    """Production agent with all 8 safety features"""
+    """Production agent with all 8 safety features + comprehensive telemetry"""
     
     def __init__(self, cost_limit=1.0):
         self.model = genai.GenerativeModel(model_name="models/gemini-2.0-flash-exp")
@@ -231,14 +270,31 @@ class ProductionAgent:
     
     def send_message(self, user_message: str, user_id: str = "user_001") -> Dict[str, Any]:
         """
-        Send message with full safety features.
+        Send message with full safety features and telemetry.
         NEVER crashes - always returns structured response.
         """
+        # Generate unique request ID for tracing
+        request_id = f"req_{uuid.uuid4().hex[:8]}"
         start_time = time.time()
+        
+        # Initialize telemetry variables
+        query_type = "unknown"
+        function_called = None
+        response_length = 0
+        error_type = None
         
         try:
             # Check cost limit BEFORE calling API
             if self.cost_tracker.total_cost >= self.cost_tracker.cost_limit:
+                error_type = "cost_limit_exceeded"
+                log_telemetry(
+                    request_id=request_id,
+                    user_id=user_id,
+                    query_type="cost_limit_check",
+                    latency_ms=(time.time() - start_time) * 1000,
+                    success=False,
+                    error_type=error_type
+                )
                 return {
                     "success": False,
                     "message": "Cost limit reached. Please try again later.",
@@ -253,14 +309,33 @@ class ProductionAgent:
             response = call_with_retry(self.chat.send_message, user_message, timeout_seconds=30)
             
             # Track cost
-            self.cost_tracker.add_cost(0.01, "gemini_api_call")
+            self.cost_tracker.add_cost(0.002, "gemini_api_call")  # More realistic cost
             
             # Check for function calls
             if response.candidates[0].content.parts[0].function_call:
                 function_call = response.candidates[0].content.parts[0].function_call
+                function_called = function_call.name
+                
+                # Determine query type from function name
+                if "analyze" in function_called:
+                    query_type = "code_analysis"
+                elif "recommend" in function_called:
+                    query_type = "recommendation"
+                elif "progress" in function_called:
+                    query_type = "progress_tracking"
                 
                 # AUTHORIZATION CHECK
                 if not check_authorization(user_id, function_call.name):
+                    error_type = "unauthorized"
+                    log_telemetry(
+                        request_id=request_id,
+                        user_id=user_id,
+                        query_type=query_type,
+                        latency_ms=(time.time() - start_time) * 1000,
+                        success=False,
+                        error_type=error_type,
+                        function_called=function_called
+                    )
                     return {
                         "success": False,
                         "message": f"You don't have permission to use {function_call.name}",
@@ -272,7 +347,17 @@ class ProductionAgent:
                     if function_call.name == "analyze_code_submission":
                         validated = AnalyzeCodeInput(**dict(function_call.args))
                 except Exception as validation_error:
+                    error_type = "validation_error"
                     log_audit("validation_error", {"error": str(validation_error)})
+                    log_telemetry(
+                        request_id=request_id,
+                        user_id=user_id,
+                        query_type=query_type,
+                        latency_ms=(time.time() - start_time) * 1000,
+                        success=False,
+                        error_type=error_type,
+                        function_called=function_called
+                    )
                     return {
                         "success": False,
                         "message": f"Invalid input: {validation_error}",
@@ -294,10 +379,29 @@ class ProductionAgent:
                         "response": function_result
                     }
                 })
+            else:
+                query_type = "conversational"
             
+            # Calculate final metrics
             execution_time = time.time() - start_time
+            response_length = len(response.text) if hasattr(response, 'text') else 0
+            
+            # LOG SUCCESSFUL REQUEST TELEMETRY
+            log_telemetry(
+                request_id=request_id,
+                user_id=user_id,
+                query_type=query_type,
+                latency_ms=execution_time * 1000,
+                success=True,
+                cost_usd=self.cost_tracker.total_cost / max(1, self.cost_tracker.call_count),
+                model_used="gemini-2.0-flash-exp",
+                cache_hit=False,  # Set to True if using cache
+                function_called=function_called,
+                response_length=response_length
+            )
             
             log_audit("successful_request", {
+                "request_id": request_id,
                 "user_id": user_id,
                 "execution_time": execution_time,
                 "cost": self.cost_tracker.total_cost
@@ -307,16 +411,30 @@ class ProductionAgent:
                 "success": True,
                 "message": response.text,
                 "execution_time": round(execution_time, 2),
-                "cost_summary": self.cost_tracker.get_summary()
+                "cost_summary": self.cost_tracker.get_summary(),
+                "request_id": request_id
             }
         
         except Exception as e:
             # NEVER CRASH - always return friendly message
             execution_time = time.time() - start_time
+            error_type = type(e).__name__
+            
+            # LOG ERROR TELEMETRY
+            log_telemetry(
+                request_id=request_id,
+                user_id=user_id,
+                query_type=query_type,
+                latency_ms=execution_time * 1000,
+                success=False,
+                error_type=error_type,
+                function_called=function_called
+            )
             
             log_audit("error", {
+                "request_id": request_id,
                 "user_id": user_id,
-                "error_type": type(e).__name__,
+                "error_type": error_type,
                 "error_message": str(e),
                 "execution_time": execution_time
             })
@@ -324,9 +442,10 @@ class ProductionAgent:
             return {
                 "success": False,
                 "message": "I encountered an issue processing your request. Please try again.",
-                "error_type": type(e).__name__,
+                "error_type": error_type,
                 "execution_time": round(execution_time, 2),
-                "cost_summary": self.cost_tracker.get_summary()
+                "cost_summary": self.cost_tracker.get_summary(),
+                "request_id": request_id
             }
     
     def _execute_function(self, function_name: str, arguments: Dict[str, Any]) -> Any:
@@ -339,14 +458,110 @@ class ProductionAgent:
         return result.model_dump()
 
 
+# ==================== TELEMETRY ANALYSIS HELPER ====================
+
+def analyze_telemetry_logs(log_file: str = "logs/telemetry.log", hours: int = 24):
+    """
+    Analyze telemetry logs to get system metrics.
+    Useful for monitoring dashboard.
+    """
+    from collections import Counter
+    from datetime import timedelta
+    
+    cutoff_time = datetime.now() - timedelta(hours=hours)
+    
+    total_requests = 0
+    successful_requests = 0
+    latencies = []
+    costs = []
+    error_types = Counter()
+    query_types = Counter()
+    
+    try:
+        with open(log_file, 'r') as f:
+            for line in f:
+                try:
+                    entry = json.loads(line)
+                    timestamp = datetime.fromisoformat(entry['timestamp'])
+                    
+                    if timestamp > cutoff_time:
+                        total_requests += 1
+                        
+                        if entry['success']:
+                            successful_requests += 1
+                        else:
+                            error_types[entry.get('error_type', 'unknown')] += 1
+                        
+                        latencies.append(entry['latency_ms'])
+                        costs.append(entry.get('cost_usd', 0))
+                        query_types[entry['query_type']] += 1
+                        
+                except json.JSONDecodeError:
+                    continue
+        
+        if total_requests == 0:
+            print(f"No telemetry data found in last {hours} hours")
+            return
+        
+        # Calculate statistics
+        avg_latency = sum(latencies) / len(latencies)
+        p95_latency = sorted(latencies)[int(len(latencies) * 0.95)] if latencies else 0
+        success_rate = (successful_requests / total_requests) * 100
+        error_rate = ((total_requests - successful_requests) / total_requests) * 100
+        
+        print(f"\n{'='*60}")
+        print(f"TELEMETRY ANALYSIS (Last {hours} hours)")
+        print(f"{'='*60}")
+        print(f"\n📊 REQUEST METRICS:")
+        print(f"  Total Requests:    {total_requests}")
+        print(f"  Successful:        {successful_requests} ({success_rate:.1f}%)")
+        print(f"  Failed:            {total_requests - successful_requests} ({error_rate:.1f}%)")
+        
+        print(f"\n⏱️  LATENCY:")
+        print(f"  Average:           {avg_latency:.0f}ms")
+        print(f"  P95:               {p95_latency:.0f}ms")
+        
+        print(f"\n💰 COST:")
+        print(f"  Total:             ${sum(costs):.4f}")
+        print(f"  Average/query:     ${sum(costs)/len(costs):.6f}")
+        
+        print(f"\n📈 QUERY TYPES:")
+        for qtype, count in query_types.most_common():
+            print(f"  {qtype:20} {count:4} ({count/total_requests*100:.1f}%)")
+        
+        if error_types:
+            print(f"\n❌ ERROR TYPES:")
+            for etype, count in error_types.most_common():
+                print(f"  {etype:20} {count:4} ({count/total_requests*100:.1f}%)")
+        
+        print(f"\n{'='*60}\n")
+        
+    except FileNotFoundError:
+        print(f"Telemetry log file not found: {log_file}")
+
+
 if __name__ == "__main__":
-    print("Testing Production Agent\n")
+    print("Testing Production Agent with Telemetry\n")
     
     agent = ProductionAgent(cost_limit=0.50)
     
     print("Test 1: Normal request")
     result = agent.send_message("What problem should I practice next?", user_id="user_001")
     print(f"Success: {result['success']}")
+    print(f"Request ID: {result.get('request_id')}")
     print(f"Cost: ${result['cost_summary']['total_cost']}\n")
     
-    print("Check logs/agent_audit.log for audit trail")
+    print("Test 2: Code analysis")
+    result = agent.send_message(
+        "Analyze this code: def two_sum(nums, target):\n    for i in range(len(nums)):\n        return [0, 1]",
+        user_id="user_001"
+    )
+    print(f"Success: {result['success']}")
+    print(f"Request ID: {result.get('request_id')}\n")
+    
+    print("\nCheck logs/telemetry.log for detailed metrics")
+    print("Check logs/agent_audit.log for audit trail\n")
+    
+    # Analyze telemetry
+    print("Analyzing telemetry from last 24 hours:")
+    analyze_telemetry_logs()
