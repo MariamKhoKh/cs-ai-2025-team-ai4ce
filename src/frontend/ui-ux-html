@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMentor AI - Interview Prep Assistant</title>
+    <style>
+        /* Lab 10 UI Guidelines: Visual Consistency */
+        :root {
+            --primary: #6366F1;
+            --success: #10B981;
+            --error: #EF4444;
+            --text: #1F2937;
+            --background: #F9FAFB;
+            --border: #E5E7EB;
+            --code-bg: #F3F4F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 32px 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: #6B7280;
+            font-size: 16px;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .messages {
+            min-height: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 8px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            background: white;
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.error {
+            background: #FEE2E2;
+            border: 1px solid var(--error);
+            color: var(--error);
+            display: flex;
+            align-items: start;
+            gap: 8px;
+        }
+
+        .message.success {
+            background: #D1FAE5;
+            border: 1px solid var(--success);
+            color: #065F46;
+        }
+
+        /* Lab 10 Requirement: Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            gap: 16px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        button {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #4F46E5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        button.secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-actions button {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--background);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .quick-actions button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .stat-label {
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Code Display */
+        .code-block {
+            background: var(--code-bg);
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 8px 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #6B7280;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--success);
+            animation: slideInRight 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 CodeMentor AI</h1>
+            <p>Your AI-powered technical interview preparation assistant</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Main Chat Area -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h2>
+                        💬 Chat
+                        <span class="status-indicator"></span>
+                    </h2>
+                    <button class="secondary" onclick="clearChat()">Clear Chat</button>
+                </div>
+
+                <div id="messages" class="messages">
+                    <div class="message assistant">
+                        Hi! I'm CodeMentor AI. I can help you:
+                        <ul style="margin: 8px 0 0 20px;">
+                            <li>Get personalized problem recommendations</li>
+                            <li>Analyze your code for patterns and issues</li>
+                            <li>Track your progress and weaknesses</li>
+                        </ul>
+                        Try asking: "What problem should I practice next?"
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <textarea 
+                        id="userInput" 
+                        placeholder="Ask for recommendations, paste code to analyze, or check your progress..."
+                        rows="3"
+                    ></textarea>
+                    <button id="sendBtn" onclick="sendMessage()">
+                        Send
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button onclick="quickAction('recommend')">
+                            📚 Get Recommendation
+                        </button>
+                        <button onclick="quickAction('progress')">
+                            📊 Check Progress
+                        </button>
+                        <button onclick="quickAction('weaknesses')">
+                            🎯 View Weaknesses
+                        </button>
+                        <button onclick="quickAction('example')">
+                            💻 Example Code Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="card">
+                    <h3>📈 Your Stats</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Problems Solved</span>
+                            <span class="stat-value">25</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Overall Mastery</span>
+                            <span class="stat-value">68%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Current Streak</span>
+                            <span class="stat-value">3 days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Top Weakness</span>
+                            <span class="stat-value" style="color: var(--error);">Edge Cases</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                    <h3 style="color: white;">💡 Tip</h3>
+                    <p style="font-size: 14px; line-height: 1.5;">
+                        Focus on problems that target your weakest areas for maximum improvement!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'http://localhost:5000';  // Flask backend
+        let isLoading = false;
+        let messageCount = 0;
+
+        // Quick action templates
+        const quickActions = {
+            'recommend': 'What problem should I practice next?',
+            'progress': 'How am I doing overall? Show me my progress and mastery scores.',
+            'weaknesses': 'What are my weakest areas that I need to work on?',
+            'example': `Analyze this code:
+def two_sum(nums, target):
+    for i in range(len(nums)):
+        for j in range(i+1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return [i, j]`
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('CodeMentor AI Frontend loaded');
+            
+            // Simulate connection check
+            setTimeout(() => {
+                checkBackendConnection();
+            }, 500);
+        });
+
+        // Check if backend is running
+        async function checkBackendConnection() {
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                if (response.ok) {
+                    showToast('Connected to CodeMentor AI backend', 'success');
+                }
+            } catch (error) {
+                addMessage('error', 
+                    '⚠️ Backend not connected. To use the AI features, start the backend server: ' +
+                    'python src/backend/api/server.py'
+                );
+            }
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message || isLoading) return;
+            
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+            messageCount++;
+            
+            // Show loading
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_URL}/api/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: message,
+                        user_id: 'user_001'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                hideLoading();
+                
+                if (data.success) {
+                    addMessage('assistant', data.message);
+                    
+                    // Show execution time
+                    if (data.execution_time) {
+                        addSystemMessage(`⚡ Processed in ${data.execution_time}s`);
+                    }
+                } else {
+                    // Lab 10 Requirement: Clear Error Messages
+                    addMessage('error', `❌ ${data.message}`);
+                }
+                
+            } catch (error) {
+                hideLoading();
+                
+                // Lab 10 Requirement: User-friendly error messages
+                if (error.message.includes('Failed to fetch')) {
+                    addMessage('error', 
+                        '🔌 Connection Error\n\n' +
+                        'Could not connect to the backend server.\n\n' +
+                        'What to do:\n' +
+                        '1. Make sure the backend is running: python src/backend/api/server.py\n' +
+                        '2. Check that it\'s running on port 5000\n' +
+                        '3. Refresh this page and try again'
+                    );
+                } else {
+                    addMessage('error', 
+                        '⚠️ Unexpected Error\n\n' +
+                        `Something went wrong: ${error.message}\n\n` +
+                        'Please try again or contact support if this persists.'
+                    );
+                }
+                
+                console.error('Error:', error);
+            }
+        }
+
+        // Quick action buttons
+        function quickAction(type) {
+            const query = quickActions[type];
+            document.getElementById('userInput').value = query;
+            sendMessage();
+        }
+
+        // Clear chat
+        function clearChat() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `
+                <div class="message assistant">
+                    Chat cleared! How can I help you prepare for your technical interview?
+                </div>
+            `;
+            messageCount = 0;
+        }
+
+        // UI Helper Functions
+        function addMessage(type, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            // Format code blocks
+            if (text.includes('def ') || text.includes('function ')) {
+                const parts = text.split('\n');
+                let formattedText = '';
+                let inCodeBlock = false;
+                
+                parts.forEach(line => {
+                    if (line.trim().startsWith('def ') || line.trim().startsWith('function ')) {
+                        if (!inCodeBlock) {
+                            formattedText += '<div class="code-block">';
+                            inCodeBlock = true;
+                        }
+                        formattedText += line + '\n';
+                    } else if (inCodeBlock && line.trim() === '') {
+                        formattedText += '</div>';
+                        inCodeBlock = false;
+                    } else if (inCodeBlock) {
+                        formattedText += line + '\n';
+                    } else {
+                        formattedText += line + '<br>';
+                    }
+                });
+                
+                if (inCodeBlock) {
+                    formattedText += '</div>';
+                }
+                
+                messageDiv.innerHTML = formattedText;
+            } else {
+                // Preserve line breaks
+                messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addSystemMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = 'text-align: center; color: #6B7280; font-size: 12px; margin: 8px 0;';
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showLoading() {
+            isLoading = true;
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('sendBtn').textContent = 'Sending...';
+            
+            const messagesDiv = document.getElementById('messages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.id = 'loading';
+            loadingDiv.innerHTML = `
+                <div class="spinner"></div>
+                <span>Processing your request... typically takes 2-3 seconds</span>
+            `;
+            messagesDiv.appendChild(loadingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideLoading() {
+            isLoading = false;
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('sendBtn').textContent = 'Send';
+            const loading = document.getElementById('loading');
+            if (loading) loading.remove();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = type === 'success' ? 'var(--success)' : 'var(--error)';
+            toast.innerHTML = `
+                <strong>${type === 'success' ? '✓' : '✗'}</strong> ${message}
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Enter key to send (Shift+Enter for new line)
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Demo mode for when backend is not running
+        if (window.location.search.includes('demo=true')) {
+            // Simulate backend responses
+            console.log('Running in demo mode');
+            
+            const originalFetch = window.fetch;
+            window.fetch = async function(url, options) {
+                if (url.includes('/api/query')) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    const body = JSON.parse(options.body);
+                    let response = '';
+                    
+                    if (body.query.includes('recommend')) {
+                        response = 'Based on your weakness profile, I recommend practicing "Valid Parentheses" (medium difficulty). This problem targets your weakest areas: edge_case_missing (40/100 mastery) and wrong_data_structure (50/100 mastery). It focuses on stack data structures and handling empty/malformed inputs.';
+                    } else if (body.query.includes('progress')) {
+                        response = 'Your current progress:\n\n📊 Overall Mastery: 68/100\n\n🎯 Top Weaknesses:\n1. Edge case handling: 40/100\n2. Data structure selection: 50/100\n3. Time complexity: 55/100\n\n✅ Problems Solved: 25\n🔥 Current Streak: 3 days\n\n💡 Next focus: Practice problems with edge cases!';
+                    } else if (body.query.includes('def two_sum')) {
+                        response = 'Code Analysis Results:\n\n✓ Tests Passed: 2/3\n\n⚠️ Detected Issues:\n1. Suboptimal Time Complexity (O(n²))\n   - Nested loops detected\n   - Consider using a hash map for O(n) solution\n\n2. Edge Case Missing (High severity)\n   - Code doesn\'t check for empty arrays\n   - Missing validation for invalid inputs\n\n💡 Recommendation: Use a dictionary to store seen numbers and their indices.';
+                    } else {
+                        response = 'I can help you prepare for technical interviews! Try asking:\n- "What problem should I practice next?"\n- "How am I doing overall?"\n- Or paste some code to analyze';
+                    }
+                    
+                    return {
+                        ok: true,
+                        json: async () => ({
+                            success: true,
+                            message: response,
+                            execution_time: 1.45
+                        })
+                    };
+                }
+                return originalFetch(url, options);
+            };
+            
+            showToast('Running in demo mode (simulated responses)', 'success');
+        }
+    </script>
+</body>
+</html>
