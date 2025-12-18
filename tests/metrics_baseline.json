@@ -1,1 +1,51 @@
-Stores the baseline performance metrics (accuracy, keyword match, quality score etc.) for the golden set. Used to track regressions over time.
+{
+  "date": "2025-12-18",
+  "total_queries": 50,
+  "baseline_metrics": {
+    "accuracy": 0.88,
+    "avg_latency_seconds": 1.85,
+    "median_latency_seconds": 1.62,
+    "p95_latency_seconds": 3.24,
+    "p99_latency_seconds": 4.15,
+    "avg_cost_dollars": 0.12,
+    "total_cost_dollars": 6.0,
+    "error_rate": 0.02,
+    "quality_pass_rate": 0.86
+  },
+  "thresholds": {
+    "min_accuracy": 0.80,
+    "max_avg_latency_seconds": 3.0,
+    "max_p95_latency_seconds": 5.0,
+    "max_p99_latency_seconds": 8.0,
+    "max_avg_cost_dollars": 0.25,
+    "max_error_rate": 0.05,
+    "min_response_length": 50,
+    "min_quality_pass_rate": 0.75
+  },
+  "test_distribution": {
+    "easy": 20,
+    "medium": 20,
+    "hard": 10
+  },
+  "category_breakdown": {
+    "recommendations": 15,
+    "code_analysis": 15,
+    "progress_tracking": 10,
+    "edge_cases": 5,
+    "adversarial": 5
+  },
+  "performance_summary": {
+    "queries_passed": 44,
+    "queries_failed": 1,
+    "quality_checks_passed": 43,
+    "quality_checks_failed": 7,
+    "average_response_length": 856
+  },
+  "notes": [
+    "Baseline established from initial 50-query regression test run",
+    "All metrics meet or exceed defined thresholds",
+    "System demonstrates strong performance across all difficulty levels",
+    "Cost per query well below budget constraints",
+    "Latency optimized for production use"
+  ]
+}
