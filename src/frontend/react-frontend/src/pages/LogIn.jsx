@@ -13,11 +13,28 @@ function LogIn({ navigateTo, onLogin }) {
     });
   };
 
-  const handleLogIn = () => {
+  const handleLogIn = async () => {
     console.log('Log In Data:', formData);
-    // TODO: Add your login API call here
-    // After successful login, call onLogin
-    onLogin();
+    
+    // TODO: Add login API call here
+    // Example:
+    // const response = await fetch('http://localhost:5000/api/login', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData)
+    // });
+    // const data = await response.json();
+    
+    // For now, simulating successful login with mock user data
+    const mockUser = {
+      id: 1,
+      name: formData.email.split('@')[0], // Extract name from email
+      email: formData.email,
+      token: 'mock-jwt-token'
+    };
+    
+    // After successful login, call onLogin with user data
+    onLogin(mockUser);
   };
 
   return (
@@ -32,7 +49,7 @@ function LogIn({ navigateTo, onLogin }) {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-green-500 mb-2">Log In</h2>
-          <p className="text-gray-400 text-sm">Access your AI account</p>
+          <p className="text-gray-400 text-sm">Access your CodeMentor account</p>
         </div>
         
         <div className="space-y-4">
