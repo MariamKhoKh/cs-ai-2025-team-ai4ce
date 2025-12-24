@@ -1,52 +1,87 @@
 import { useState, useEffect } from 'react';
 
-function Exercise({ onLogout }) {
-  const [exerciseData, setExerciseData] = useState({
-    title: '',
-    description: '',
-    difficulty: '',
-    examples: [],
-    constraints: [],
-    loading: true
-  });
-  
-  const [userCode, setUserCode] = useState('// Write your code here\n\n');
+function Exercise({ onLogout, problem, onCodeSubmit, navigateTo }) {
+  const [userCode, setUserCode] = useState('// Write your solution here\n\n');
+  const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [testResults, setTestResults] = useState(null);
 
   useEffect(() => {
-    // TODO: Fetch exercise from backend
-    // fetch('http://your-backend-api/exercise', {
-    //   method: 'GET',
-    //   headers: {
-    //     'Authorization': `Bearer ${authToken}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   setExerciseData({
-    //     title: data.title,
-    //     description: data.description,
-    //     difficulty: data.difficulty,
-    //     examples: data.examples,
-    //     constraints: data.constraints,
-    //     loading: false
-    //   });
-    // })
-    
-    setExerciseData({
-      ...exerciseData,
-      loading: false
-    });
-  }, []);
+    // When problem loads from backend, set initial code template
+    if (problem) {
+      setUserCode(`# ${problem.title}\n# ${problem.description}\n\ndef solution():\n    # Your code here\n    pass\n`);
+      setTestResults(null);
+    }
+  }, [problem]);
 
-  const handleRunCode = () => {
-    console.log('Running code:', userCode);
-    // TODO: Send code to backend for execution
+  const handleRunCode = async () => {
+    setIsRunning(true);
+    setTestResults(null);
+    
+    try {
+      // TODO: Replace with your actual backend URL
+      const response = await fetch('http://localhost:5000/api/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          code: userCode,
+          problemId: problem?.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to run code');
+      }
+
+      const data = await response.json();
+      // Backend returns: { passed, total, results: [...] }
+      setTestResults(data);
+    } catch (error) {
+      console.error('Error running code:', error);
+      setTestResults({
+        error: 'Failed to run code. Make sure backend is running.'
+      });
+    } finally {
+      setIsRunning(false);
+    }
   };
 
-  const handleSubmitCode = () => {
-    console.log('Submitting code:', userCode);
-    // TODO: Send code to backend for validation
+  const handleSubmitCode = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      // TODO: Replace with your actual backend URL
+      const response = await fetch('http://localhost:5000/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          code: userCode,
+          problemId: problem?.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit code');
+      }
+
+      const data = await response.json();
+      // Backend returns: { submissionId, ... }
+      // Pass to feedback page
+      onCodeSubmit({
+        code: userCode,
+        problemId: problem?.id,
+        submissionId: data.submissionId
+      });
+    } catch (error) {
+      console.error('Error submitting code:', error);
+      alert('Failed to submit code. Make sure backend is running.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -58,88 +93,129 @@ function Exercise({ onLogout }) {
     }
   };
 
+  if (!problem) {
+    return (
+      <div className="h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <svg className="w-20 h-20 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-400 mb-4">No Problem Selected</h2>
+          <p className="text-gray-500 mb-6">Select a problem from the dashboard to start coding</p>
+          <button
+            onClick={() => navigateTo('dashboard')}
+            className="px-6 py-2 bg-green-600 text-black rounded-lg font-bold hover:bg-green-500 transition duration-200"
+          >
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen bg-black flex flex-col">
-      {/* Header */}
-      <div className="bg-zinc-900 border-b border-green-500/30 px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center">
-          <svg className="w-8 h-8 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-          <h1 className="text-2xl font-bold text-green-500">Code Exercise</h1>
-        </div>
-        <button
-          onClick={onLogout}
-          className="px-4 py-2 bg-zinc-800 border border-green-500/30 text-green-500 rounded-lg hover:bg-zinc-700 transition duration-200 text-sm"
-        >
-          Logout
-        </button>
-      </div>
-
       {/* Split Screen */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Side - Problem Description */}
+        {/* Left Side - Problem Description (from backend) */}
         <div className="w-1/2 border-r border-green-500/30 overflow-y-auto p-6">
-          {exerciseData.loading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-green-500 text-xl">Loading exercise...</div>
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-3xl font-bold text-green-500">{problem.title}</h2>
+              {problem.difficulty && (
+                <span className={`px-3 py-1 rounded-lg text-sm font-semibold border ${getDifficultyColor(problem.difficulty)}`}>
+                  {problem.difficulty}
+                </span>
+              )}
             </div>
-          ) : !exerciseData.title ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <svg className="w-20 h-20 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <h2 className="text-2xl font-bold text-gray-400 mb-2">No Exercise Loaded</h2>
-              <p className="text-gray-500">Waiting for backend to provide exercise data</p>
-            </div>
-          ) : (
-            <div>
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-3xl font-bold text-green-500">{exerciseData.title}</h2>
-                  {exerciseData.difficulty && (
-                    <span className={`px-3 py-1 rounded-lg text-sm font-semibold border ${getDifficultyColor(exerciseData.difficulty)}`}>
-                      {exerciseData.difficulty}
-                    </span>
+            {problem.category && (
+              <div className="mb-4">
+                <span className="text-green-400 font-semibold text-sm">{problem.category}</span>
+              </div>
+            )}
+            <p className="text-gray-300 leading-relaxed">{problem.description}</p>
+          </div>
+
+          {/* Examples from backend */}
+          {problem.examples && problem.examples.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-400 mb-3">Examples</h3>
+              {problem.examples.map((example, index) => (
+                <div key={index} className="bg-zinc-900 border border-green-500/20 rounded-lg p-4 mb-3">
+                  <div className="mb-2">
+                    <span className="text-gray-400 font-semibold">Input: </span>
+                    <code className="text-green-300">{example.input}</code>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 font-semibold">Output: </span>
+                    <code className="text-green-300">{example.output}</code>
+                  </div>
+                  {example.explanation && (
+                    <div className="mt-2 text-gray-400 text-sm">
+                      <span className="font-semibold">Explanation: </span>
+                      {example.explanation}
+                    </div>
                   )}
                 </div>
-                <p className="text-gray-300 leading-relaxed">{exerciseData.description}</p>
+              ))}
+            </div>
+          )}
+
+          {/* Constraints from backend */}
+          {problem.constraints && problem.constraints.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-400 mb-3">Constraints</h3>
+              <ul className="list-disc list-inside space-y-2">
+                {problem.constraints.map((constraint, index) => (
+                  <li key={index} className="text-gray-300">{constraint}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Test Results from backend */}
+          {testResults && !testResults.error && (
+            <div className="mt-6">
+              <h3 className="text-xl font-bold text-green-400 mb-3">Test Results</h3>
+              <div className="mb-4">
+                <span className="text-gray-300">Passed: </span>
+                <span className={testResults.passed === testResults.total ? 'text-green-400 font-bold' : 'text-yellow-400 font-bold'}>
+                  {testResults.passed} / {testResults.total}
+                </span>
               </div>
-
-              {exerciseData.examples && exerciseData.examples.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-green-400 mb-3">Examples</h3>
-                  {exerciseData.examples.map((example, index) => (
-                    <div key={index} className="bg-zinc-900 border border-green-500/20 rounded-lg p-4 mb-3">
-                      <div className="mb-2">
-                        <span className="text-gray-400 font-semibold">Input: </span>
-                        <code className="text-green-300">{example.input}</code>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 font-semibold">Output: </span>
-                        <code className="text-green-300">{example.output}</code>
-                      </div>
-                      {example.explanation && (
-                        <div className="mt-2 text-gray-400 text-sm">
-                          <span className="font-semibold">Explanation: </span>
-                          {example.explanation}
-                        </div>
+              <div className="space-y-2">
+                {testResults.results.map((result, index) => (
+                  <div 
+                    key={index}
+                    className={`border rounded-lg p-3 ${result.passed ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}
+                  >
+                    <div className="flex items-center mb-2">
+                      {result.passed ? (
+                        <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       )}
+                      <span className="text-sm font-semibold text-gray-300">Test Case {index + 1}</span>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <div className="text-sm text-gray-400 space-y-1">
+                      <div><span className="font-semibold">Input:</span> {result.input}</div>
+                      <div><span className="font-semibold">Your Output:</span> {result.output}</div>
+                      <div><span className="font-semibold">Expected:</span> {result.expected}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-              {exerciseData.constraints && exerciseData.constraints.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-bold text-green-400 mb-3">Constraints</h3>
-                  <ul className="list-disc list-inside space-y-2">
-                    {exerciseData.constraints.map((constraint, index) => (
-                      <li key={index} className="text-gray-300">{constraint}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+          {/* Error from backend */}
+          {testResults?.error && (
+            <div className="mt-6 bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+              <p className="text-red-400">{testResults.error}</p>
             </div>
           )}
         </div>
@@ -151,15 +227,25 @@ function Exercise({ onLogout }) {
             <div className="flex gap-2">
               <button
                 onClick={handleRunCode}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-200 text-sm font-semibold"
+                disabled={isRunning}
+                className={`px-4 py-2 rounded-lg transition duration-200 text-sm font-semibold ${
+                  isRunning
+                    ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-500'
+                }`}
               >
-                Run Code
+                {isRunning ? 'Running...' : 'Run Code'}
               </button>
               <button
                 onClick={handleSubmitCode}
-                className="px-4 py-2 bg-green-600 text-black rounded-lg hover:bg-green-500 transition duration-200 text-sm font-semibold shadow-lg shadow-green-500/30"
+                disabled={isSubmitting}
+                className={`px-4 py-2 rounded-lg transition duration-200 text-sm font-semibold shadow-lg ${
+                  isSubmitting
+                    ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                    : 'bg-green-600 text-black hover:bg-green-500 shadow-green-500/30'
+                }`}
               >
-                Submit
+                {isSubmitting ? 'Submitting...' : 'Submit for AI Feedback'}
               </button>
             </div>
           </div>
@@ -169,6 +255,7 @@ function Exercise({ onLogout }) {
             onChange={(e) => setUserCode(e.target.value)}
             className="flex-1 p-6 bg-black text-green-100 font-mono text-sm focus:outline-none resize-none"
             spellCheck="false"
+            placeholder="// Write your code here..."
             style={{ 
               fontFamily: "'Fira Code', 'Courier New', monospace",
               tabSize: 2
