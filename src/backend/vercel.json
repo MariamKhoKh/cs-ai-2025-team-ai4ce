@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "codementor-backend",
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+  ]
+}
