@@ -9,16 +9,19 @@ function Feedback({ onLogout, submittedCode, problem, navigateTo }) {
     // Fetch AI-generated feedback from backend
     const fetchFeedback = async () => {
       try {
-        // TODO: Replace with your actual backend URL
-        const response = await fetch(`http://localhost:5000/api/feedback/${submittedCode?.submissionId}`, {
+        const envBase = import.meta.env.VITE_API_URL;
+        const fallback = window.__BACKEND_URL__ || window.location.origin || 'http://localhost:3000';
+        const base = (envBase || fallback).replace(/\/$/, '');
+        const submissionId = submittedCode?.submissionId;
+        const url = `${base}/api/feedback/${submissionId}`;
+
+        const response = await fetch(url, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers: { 'Content-Type': 'application/json' }
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch feedback');
+          throw new Error(`Failed to fetch feedback: ${response.status}`);
         }
 
         const data = await response.json();
@@ -35,7 +38,7 @@ function Feedback({ onLogout, submittedCode, problem, navigateTo }) {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching feedback:', err);
-        setError('Failed to load AI feedback. Make sure backend is running.');
+        setError('Failed to load AI feedback. Make sure backend is running or VITE_API_URL is set.');
         setLoading(false);
       }
     };

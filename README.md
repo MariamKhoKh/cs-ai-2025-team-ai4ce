@@ -185,6 +185,18 @@ python test_regression.py
 
 ---
 
+## Vercel Deployment (Frontend)
+
+- In Vercel create a new project and set the Root Directory to:
+  src/frontend/react-frontend
+- Build Command: npm run build
+- Output Directory: dist
+- Add Environment Variables (Project Settings):
+  - VITE_API_URL = https://your-backend.example.com
+- Commit & push to the repo; Vercel will run the static build and deploy the site.
+
+---
+
 
 December 16, 2024*
 
