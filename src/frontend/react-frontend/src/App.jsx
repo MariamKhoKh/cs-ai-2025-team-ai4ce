@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SignUp from './pages/SignUp';
+import SignUp from './pages/SignIn';
 import LogIn from './pages/LogIn';
 import Dashboard from './pages/Dashboard';
 import Exercise from './pages/Exercise';
