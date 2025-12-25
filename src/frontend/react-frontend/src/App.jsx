@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SignUp from './pages/SignIn';
+import SignIn from './pages/SignIn';
 import LogIn from './pages/LogIn';
 import Dashboard from './pages/Dashboard';
 import Exercise from './pages/Exercise';
@@ -7,7 +7,7 @@ import Feedback from './pages/Feedback';
 import Navbar from './components/Navbar';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('signup');
+  const [currentPage, setCurrentPage] = useState('signin');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(null);
@@ -52,8 +52,8 @@ function App() {
         />
       )}
       
-      {currentPage === 'signup' && (
-        <SignUp navigateTo={navigateTo} />
+      {currentPage === 'signin' && (
+        <SignIn navigateTo={navigateTo} />
       )}
       
       {currentPage === 'login' && (
