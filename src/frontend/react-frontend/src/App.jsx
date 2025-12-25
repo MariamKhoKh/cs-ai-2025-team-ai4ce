@@ -4,7 +4,7 @@ import LogIn from './pages/LogIn';
 import Dashboard from './pages/Dashboard';
 import Exercise from './pages/Exercise';
 import Feedback from './pages/Feedback';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('signin');
